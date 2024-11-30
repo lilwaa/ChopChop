@@ -1,39 +1,45 @@
 
 /* Update your component's main container */
 .recipe-search-container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem;
     background-color: rgb(249, 250, 251); /* Light gray background */
   }
-  
-  /* Search bar styling */
-  .search-container {
-    background: white;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 1rem;
-    padding-left: 2.5rem;
-    font-size: 1rem;
-    border: none;
-    background: #f9fafb;
-    border-radius: 0.5rem;
-  }
-  
-  .search-icon {
-    position: absolute;
-    left: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-  }
-  
+
+/* search bar container */
+.search-container {
+  background-color: white;
+  width: 100%;
+  border-radius: 0.75rem;
+  padding: 0 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  position: relative; 
+  justify-content: space-between;
+}
+
+/* Search icon */
+.search-icon {
+  color: #6b7280;
+  font-size: 2rem; 
+  margin-right: 10px; 
+  flex-shrink: 0;
+}
+
+/* Search input */
+.search-input {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  flex-grow: 1;  
+  padding: 2rem; 
+  margin-left: 5px; 
+  outline: none;
+}
+
+
  /* Calorie range section styling */
 .calorie-section {
     background: white;
@@ -71,16 +77,13 @@
   
   
   /* Filter groups */
-  .filter-group {
-    margin-bottom: 1rem;
-    width: 100%;
-  }
+
   
   .filter-group-button {
     width: 100%;
     padding: 1rem 1.5rem;
     text-align: left;
-    font-size: 1.125rem;
+    font-size: 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -94,6 +97,7 @@
   /* Add more space between filter groups and buttons */
   .filter-group {
     margin-bottom: 1.5rem;
+    width: 100%;
   }
   
   /* Add space between filter content and see more button */
@@ -135,10 +139,16 @@
   
   .recipe-card {
     background: white;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+
+    /* Flexbox to make sure the button is at the bottom */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure it stretches to fill its container */
+    position: relative;
   }
   
   .recipe-card:hover {
@@ -153,10 +163,11 @@
   
   .recipe-content {
     padding: 1.5rem;
+    height: 100%;
   }
   
   .recipe-title {
-    font-size: 1.25rem;
+    font-size: 1.50rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
   }
@@ -171,15 +182,15 @@
   .recipe-labels {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.25rem;
     margin-bottom: 1rem;
   }
   
   .recipe-label {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
-    font-size: 0.75rem;
-    background: #f3f4f6;
+    font-size: 1.25rem;
+    background: #45c58f9d;
   }
   
   .view-recipe-button {
@@ -187,15 +198,19 @@
     width: 100%;
     padding: 0.75rem;
     text-align: center;
-    background: #4f46e5;
+    background: #8e311a93;
     color: white;
     border-radius: 0.5rem;
     text-decoration: none;
     transition: background-color 0.2s;
+
+    /* Push the button to the bottom of the card */
+    margin-top: auto;
+    bottom: 20;
   }
   
   .view-recipe-button:hover {
-    background: #4338ca;
+    background: #8e311ad1;
   }
   
   /* Search button */
@@ -209,7 +224,7 @@
     background-color: #ffffff;
     border: 1px solid #e5e7eb;
     padding: 0.75rem 2rem;
-    font-size: 1rem;
+    font-size: 17px;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -225,7 +240,7 @@
   
   /* Search recipe button */
   .search-button {
-    background-color: #4f46e5;
+    background-color: #8e311a93;
     color: white;
     padding: 1rem 3rem;
     font-size: 1.125rem;
@@ -240,7 +255,7 @@
   }
   
   .search-button:hover:not(:disabled) {
-    background-color: #4338ca;
+    background-color: #8e311ad1;
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }

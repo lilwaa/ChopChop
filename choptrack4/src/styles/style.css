@@ -943,7 +943,13 @@ header .fh5co-navbar-brand .fh5co-logo:active, header .fh5co-navbar-brand .fh5co
 }
 
 input[type="text"] {
+  padding: 10px;           /* Optional: adds padding inside the input field */
+  border-radius: 4px;      /* Optional: rounds the corners of the border */
   height: 30px;
+}
+
+input[type="text"]:focus {
+  border: none;
 }
 
 input[type="email"] {
@@ -1102,14 +1108,15 @@ input[type="password"] {
 
 /* Wrapper div for centering */
 .form-wrapper {
+  padding: 15px;
+  width: 100%;
   display: flex;               /* Use flexbox to center the content */
   justify-content: center;     /* Center horizontally */
   align-items: center;         /* Center vertically */
 }
 
 /* Form container styling */
-.form-container {
-  max-width: 75%;              /* Restrict form width to 50% of the page */
+.form-container {      
   width: 100%;                 /* Allow form to stretch to 100% within its max-width */
   padding: 20px;
   box-sizing: border-box;      /* Include padding in width calculations */

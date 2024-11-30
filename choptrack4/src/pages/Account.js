@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 // import css files
-import '../styles/animate.css';
-import '../styles/icomoon.css';
-import '../styles/bootstrap.css';
-import '../styles/flexslider.css';
 import '../styles/style.css';
 
 // firebase imports
@@ -93,13 +89,22 @@ const AccountPage = () => {
           if (email) {
             verifyBeforeUpdateEmail(auth.currentUser, email).then(() => {
               console.log("Email updated successfully");
+              window.location.reload();
             }).catch((error) => {
               console.log(error);
             });
           }
+          window.location.reload();
         }).catch((error) => {
           console.error("Error updating profile:", error);
         });
+        window.location.reload();
+      }
+      else{
+        nameField.removeAttribute("readonly");
+        phoneField.removeAttribute("readonly");
+        emailField.removeAttribute("readonly");
+        window.location.reload();
       }
     }
   };

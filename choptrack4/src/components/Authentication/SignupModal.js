@@ -47,7 +47,7 @@ function SignupModal() {
                 const docRef = doc(usersCollection, user.uid); 
                 const data = {
                     name: namee,
-                    phoneNumber: phoneNumberr,
+                    phoneNumber: "+1"+ phoneNumberr,
                 }
                 try {
                     const docdoc = setDoc(docRef, data);

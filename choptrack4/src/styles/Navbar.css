@@ -5,16 +5,22 @@
 
 * {
   font-family: myFirstFont;
+  
 }
 /* src/styles/Navbar.css */
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 60px;
   background-color: #333;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Center all items vertically */
   padding: 0 2rem;
+  z-index: 1000;  /* Make sure navbar is always on top */
+  padding-top: 5px;
 }
 
 .navbar a {
@@ -22,18 +28,22 @@
   text-decoration: none;
   margin: 0 1rem;
   font-size: 1.5rem;
+  align-items: center;
 }
 .navbar p{
   color: white;
   text-decoration: none;
   margin: 0 1rem;
-  font-size: 1.5rem;
+  font-size: 1.5rem;display: flex; /* Ensures vertical alignment */
+  align-items: center; /* Vertically align the items within each link/button */
 }
+
 .navbar button{
   color: white;
   text-decoration: none;
   margin: 0 1rem;
   font-size: 1.5rem;
+  align-items: center;
 }
 
 .navbar a:hover {
@@ -51,6 +61,10 @@
   display: flex;
   align-items: center;
   
+}
+.logout-wrapper{
+  align-items: center;
+  padding-top: 11px;
 }
 
 .navbarToggle{

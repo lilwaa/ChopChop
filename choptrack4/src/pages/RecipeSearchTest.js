@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import '../styles/RecipeSearchTest.css'
 
+
 const FilterGroup = ({ title, options, expanded, onToggle, selectedOptions, onOptionChange }) => {
   useEffect(() => {
     // change the title dynamically
@@ -53,7 +54,7 @@ const FilterGroup = ({ title, options, expanded, onToggle, selectedOptions, onOp
                 onClick={() => setShowAll(!showAll)}
                 className="see-more-button"
               >
-                {showAll ? 'Show less' : `See ${remainingOptions} more options`}
+                {showAll ? 'Show less' : `See ${remainingOptions}+ options`}
               </button>
             </div>
           )}
@@ -324,17 +325,22 @@ function RecipeSearch() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-8">Recipe Search</h2>
-
-      <div className="search-container relative">
-        <Search className="search-icon" size={20} />
+    <div className="recipe-search-container max-w-7xl mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold mb-8" style={{paddingTop: "20px"}}>Recipe Search</h2>
+      <div className="search-container">
+      <Search className="search-icon" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search recipes (e.g., 'chicken curry', 'vegetarian pasta')..."
           className="search-input"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch();  // Call handleSearch when Enter is pressed
+            }
+          }
+        }
         />
       </div>
 

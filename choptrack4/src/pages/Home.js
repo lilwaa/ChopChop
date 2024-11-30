@@ -39,7 +39,7 @@ function Home() {
     return (
         <div>
             {/* Hero Section */}
-            <div className="home" style={{ backgroundImage: `url(${BannerImage})` }}>
+            <div className="home" style={{ backgroundImage: `url(${BannerImage})`, width: '100%' }}>
                 <div className="headerContainer">
                     <h1>ChopChop</h1>
                     <p>Simplify your meal prep journey</p>
