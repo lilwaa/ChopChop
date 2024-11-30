@@ -50,9 +50,16 @@ function SignupModal() {
                     phoneNumber: "+1"+ phoneNumberr,
                 }
                 try {
+                    //creating their userprofile doc
                     const docdoc = setDoc(docRef, data);
+                    //setting their display name
+                    updateProfile(auth.currentUser, {
+                      displayName: namee
+                    }).catch((error) => {
+                      console.log(error)
+                    });
                     sendEmailVerification(auth.currentUser)
-                    .then(() => {
+                    .then(() => {            
                         console.log("verification sent");
                         setErrorMess("Check email " + email + " for verification!");
                         openErrorPopup();
