@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: myFirstFont;
-  src: url(choptrack4/src/styles/aovel-sans-rounded-font/AovelSansRounded-rdDL.ttf);
+  src: url(../styles/aovel-sans-rounded-font/AovelSansRounded-rdDL.ttf);
 }
 
 * {

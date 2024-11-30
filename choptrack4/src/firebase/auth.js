@@ -1,23 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
-import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
-import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from   "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"; 
-import {auth, app, db} from "./authstate.js";
-
-// const firebaseConfig = {
-//     apiKey: "AIzaSyC0ZUVo-XpFuatRsPbKibyrUiuO29n6msI",
-//     authDomain: "chopchop-49d57.firebaseapp.com",
-//     projectId: "chopchop-49d57",
-//     storageBucket: "chopchop-49d57.appspot.com",
-//     messagingSenderId: "290107923557",
-//     appId: "1:290107923557:web:6e6723a8b49d167982ba8c"
-// };
-  
-//   // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// console.log(app)
-// // Initialize Firebase Authentication and get a reference to the service
-// const auth = getAuth(app);
-// const db = getFirestore(app);
+// Import Firebase modules
+import { getFirestore, doc, getDoc, setDoc, collection } from "firebase/firestore"
+import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
+import {auth, app, db} from "./firebaseConfig.js";
 
 //tracking of user authentication status
 auth.onAuthStateChanged(user => {

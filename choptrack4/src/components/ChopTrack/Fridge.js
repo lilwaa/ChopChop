@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase/firebaseConfig.js';
+import {getUserData} from '../../firebase/userService.js';
 import { collection, getDocs, doc, deleteDoc, addDoc } from 'firebase/firestore';
 import Calendar from 'react-calendar';
 import { Checkbox, FormControlLabel, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
@@ -29,9 +30,30 @@ function Fridge() {
     }
   });
 
+  let userData = null;
+
+    const fetchUserData = async () => {
+        if (!userData) { // Fetch only if not already fetched
+          try {
+            userData = await getUserData();
+            console.log(`Fetched User Data:`, userData);
+          } catch (error) {
+            console.error('Failed to fetch user data:', error);
+            throw error;
+          }
+        }
+        return userData;
+    };
+
   // Fetch grocery items from Firestore
   const fetchItems = async () => {
-    const querySnapshot = await getDocs(collection(db, 'fridge'));
+    await fetchUserData();
+    if (!userData) return;
+
+    const userDocRef = doc(db, 'users', userData.uid);
+    const itemRef = collection(userDocRef, 'fridge');
+
+    const querySnapshot = await getDocs(itemRef);
     const items = querySnapshot.docs.map(doc => ({
       id: doc.id, // Ensure Firestore doc ID is assigned
       ...doc.data()
@@ -108,38 +130,40 @@ function Fridge() {
     return text;
   };
 
+  // Confirmation checkbox
   const handleCheckboxChange = async (itemId) => {
-    // Open confirmation dialog when a checkbox is clicked
     setItemToDelete(itemId);
     setOpenConfirmDeletionDialog(true);
   };
 
   // Function to handle deletion after confirmation
   const handleDeleteConfirmation = async () => {
-    // If confirmed, remove item from Firestore
-    if (itemToDelete) {
-      const itemRef = doc(db, 'fridge', itemToDelete); // Reference to the document in Firestore
-      await deleteDoc(itemRef); // Delete the document
+    await fetchUserData();
+    if (!userData) return;
 
-      // Update the state to remove the item from the UI
+    if (itemToDelete) {
+      const userDocRef = doc(db, 'users', userData.uid);
+      const itemRef = doc(userDocRef, 'fridge', itemToDelete); 
+      await deleteDoc(itemRef); 
+
       setGroceryItems(prevItems => prevItems.filter(item => item.id !== itemToDelete));
       setItemsOnSelectedDate(prevItems => prevItems.filter(item => item.id !== itemToDelete));
     }
 
     // Close the dialog
     setOpenConfirmDeletionDialog(false);
-    setItemToDelete(null); // Reset the item to delete
+    setItemToDelete(null);
   };
 
+  // Close dialog w/o delete
   const handleCancelDeletion = () => {
-    // Close the dialog without deleting anything
     setOpenConfirmDeletionDialog(false);
-    setItemToDelete(null); // Reset the item to delete
+    setItemToDelete(null); 
   };
 
   // Handle refresh button click
   const handleRefreshClick = () => {
-    fetchItems(); // Re-fetch items from Firestore
+    fetchItems(); 
   };
 
   // Handle form field changes
@@ -165,15 +189,12 @@ function Fridge() {
   // Function to handle the form submission to add a new item
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
     try {
-      //console.log(newItem.reminderDate);
-
+      await fetchUserData();
+      if (!userData) return;
       const reminderDate = new Date(`${newItem.reminderDate}T00:00:00`); // Ensure time is 00:00:00 for that day
-      //console.log(reminderDate);
-
-
-      await addDoc(collection(db, 'fridge'), {
+      const userDocRef = doc(db, 'users', userData.uid);
+      await addDoc(collection(userDocRef, 'fridge'), {
         itemName: newItem.name,
         quantity: newItem.quantity,
         reminderDate: reminderDate,
@@ -197,14 +218,11 @@ function Fridge() {
         }
       });
       setOpenAddAlertDialog(false);
-      fetchItems(); // Re-fetch items from Firestore
+      fetchItems(); 
     } catch (error) {
       console.error('Error adding item:', error);
     }
   };
-
-
-  
 
    // Handle the "Add Alert" button click to open the modal
    const handleAddAlertClick = () => {
@@ -226,7 +244,7 @@ function Fridge() {
 
         {/* Right side: List of items for the selected date */}
         <div className="grocery-list">
-          <h3>Items Due on {selectedDate ? selectedDate.toLocaleDateString() : 'Select a Date'}</h3>
+          <h3>Items Due on {selectedDate ? selectedDate.toLocaleDateString() : ''}</h3>
           {itemsOnSelectedDate.length === 0 ? (
             <p>No items due on this date.</p>
           ) : (

@@ -27,6 +27,13 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
   const languageClient = new language.LanguageServiceClient();
 
   try {
+    // Extract userId from storage path (users/{uid}/receipts/{fileName})
+    const pathParts = object.name.split('/');
+    console.log(pathParts);
+    logger.log(pathParts);
+    const userId = pathParts[1]; // userData.uid
+    const fileName = pathParts[3]; // File name with UUID and original file name
+
     // Google Vision to parse JPG/PNG of receipt into text
     const [textDetections] = await client.documentTextDetection(imageBucket);
     const fullTextAnnotation = textDetections.fullTextAnnotation;
@@ -41,8 +48,6 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
     let receiptInfo;
 
     // Extract Store Name
-
-    // Specially check for Publix or Kroger
     const storeNamesToCheck = ['publix', 'kroger']; 
     let storeName = 'unknown'; 
 
@@ -124,7 +129,7 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
     }
 
     // Firestore path to save parsed receipts:
-    const documentId = object.name.split('receipt-files/')[1]; 
+    const documentId = fileName.split('_')[0];
 
     // Construct receipt data
     const receipt = {
@@ -135,7 +140,12 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
     };
 
     // Save receipt data in Firestore
-    await admin.firestore().collection(RECEIPT_COLLECTION).doc(documentId).set(receipt);
+    await admin.firestore()
+      .collection('users')
+      .doc(userId)  // User document based on userId extracted from storage path
+      .collection('receipts')  // Receipts subcollection for the specific user
+      .doc(documentId)  // Use the file name as the document ID
+      .set(receipt);
     logger.log('Receipt data saved to Firestore successfully.');
 
   } catch (error) {
