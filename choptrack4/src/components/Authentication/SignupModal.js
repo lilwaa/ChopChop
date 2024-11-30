@@ -9,7 +9,7 @@ import '../../styles/style.css';
 //import firebase stuff
 import {app, auth, db} from "../../firebase/firebaseConfig.js";
 import { getDoc, doc, collection, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
-import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
+import {getAuth, updateProfile, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
 //import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
 //import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
 //import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from   "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"; 
