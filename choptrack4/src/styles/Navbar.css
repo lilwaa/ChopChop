@@ -1,0 +1,87 @@
+@font-face {
+  font-family: myFirstFont;
+  src: url(choptrack4/src/styles/aovel-sans-rounded-font/AovelSansRounded-rdDL.ttf);
+}
+
+* {
+  font-family: myFirstFont;
+}
+/* src/styles/Navbar.css */
+.navbar {
+  width: 100%;
+  height: 60px;
+  background-color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-size: 1.5rem;
+}
+.navbar p{
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-size: 1.5rem;
+}
+.navbar button{
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-size: 1.5rem;
+}
+
+.navbar a:hover {
+  color: #ddd;
+}
+
+.navbar p:hover {
+  color: #ddd;
+}
+.navbar button:hover {
+  color: #ddd;
+}
+
+.rightSide {
+  display: flex;
+  align-items: center;
+  
+}
+
+.navbarToggle{
+  display: none;
+  background-color: none;
+  border: none;
+  color:  white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hiddenLinks {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .rightSide a {
+    display: none;
+  }
+  
+  .rightSide button {
+    display: block;
+  }
+  
+  .hiddenLinks {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hiddenLinks.active {
+    display: flex;
+  }
+}

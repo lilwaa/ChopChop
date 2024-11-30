@@ -1,0 +1,4 @@
+node_modules/
+*.local
+
+./choptrack-801d8-a19b23f04156.json
