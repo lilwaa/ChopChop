@@ -14,6 +14,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import '../../styles/Orders.css';
 
+
 function Orders() {
     // Store states and variables
     const [imageUpload, setImageUpload] = useState(null);           // Receipt image
@@ -571,12 +572,12 @@ const handleViewReceipt = async (receiptId) => {
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             {/* Upload Receipt Button */}
                             <Button variant="outlined" component="label" color="secondary">
-                                Upload Receipt
-                                <input
-                                    type="file"
-                                    hidden
-                                    onInput={(e) => setFileData(e.target)} // Handle file input immediately
-                                />
+                              Upload Receipt
+                              <input
+                                type="file"
+                                style={{ display: 'none' }} // Hide the input completely
+                                onChange={(e) => setFileData(e.target.files[0])} // Use 'files[0]' to get the selected file
+                              />
                             </Button>
                             <Typography>{imageUpload ? imageUpload.name : "No file selected"}</Typography>
 

@@ -139,7 +139,7 @@ function Budget() {
 
   return (
     <div className="Budget" style={{ height: '400px' }}>  {/* Set the height of the container */}
-      <h2>Grand Totals from Receipts</h2>
+      <h2>Budget</h2>
       {grandTotals.length > 0 ? (
         <>
           <Line data={chartData} options={chartOptions} height={300} />  {/* Set height of the chart */}

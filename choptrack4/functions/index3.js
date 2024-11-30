@@ -166,8 +166,9 @@ const TWILIO_PHONE_NUMBER = '+18883052385';
 
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
+
 export const sendDailyReminders = functions.pubsub
-  .schedule('0 8 * * *')  // This schedules the function to run every day at 8 AM
+  .schedule('0 8 * * *') 
   .timeZone('America/New_York')
   .onRun(async (context) => {
 
@@ -177,106 +178,82 @@ export const sendDailyReminders = functions.pubsub
     const endOfDay = new Date(now.setHours(23, 59, 59, 999));
 
     try {
-      // Fetch all users' fridge items due today
-      const usersSnapshot = await admin.firestore().collection('users').get();
+      const fridgeRef = admin.firestore().collection('fridge');
+      const snapshot = await fridgeRef
+        .where('reminderDate', '>=', startOfDay)
+        .where('reminderDate', '<=', endOfDay)
+        .get();
 
-      if (usersSnapshot.empty) {
-        logger.log('No users found.');
+      if (snapshot.empty) {
+        logger.log('No items with reminders found for today.');
         return;
       }
 
-      // Loop through each user
-      for (const userDoc of usersSnapshot.docs) {
-        const userId = userDoc.id;
-        logger.log(`Processing reminders for userId: ${userId}`);
+      // Group reminders
+      const reminders = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const { itemName } = data;
+        reminders.push(itemName);
+      });
 
-        // Query the fridge items for the current user
-        const fridgeRef = admin.firestore().collection('users').doc(userId).collection('fridge');
-        const snapshot = await fridgeRef
-          .where('reminderDate', '>=', startOfDay)
-          .where('reminderDate', '<=', endOfDay)
-          .get();
+      /* 
+      get phone number: 
+      const usersCollection = collection(db, 'userProfile');
+      const docRef = doc(usersCollection, authUser.uid);
+      doc.get(phoneNumber);
+      
+      */
 
-        if (snapshot.empty) {
-          logger.log(`No items with reminders found for user ${userId} today.`);
-          continue;
-        }
-
-        // Group reminders for this user
-        const reminders = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const { itemName } = data;
-          reminders.push(itemName);
-        });
-
-        // Fetch phone number from the user's profile
-        logger.log(`Fetching phone number for userId: ${userId}`);
-        const userProfileDocRef = admin.firestore().collection('userProfile').doc(userId);
-        const userProfileDoc = await userProfileDocRef.get();
-
-        if (!userProfileDoc.exists) {
-          logger.error(`User profile document for ${userId} does not exist.`);
-          continue;
-        }
-
-        const { phoneNumber } = userProfileDoc.data();
-        if (!phoneNumber) {
-          logger.warn(`User ${userId} does not have a phone number.`);
-          continue;
-        }
-
-        // Build the reminder message
-        let messageBody = `Good morning! Here are your reminders for today:\n- ${reminders.join('\n- ')}`;
-
-        // Send reminder via Twilio
-        logger.log(`Sending reminder message to ${phoneNumber}`);
+      if (reminders.length > 0) {
+        const messageBody = `Good morning! Here are your reminders for today:\n- ${reminders.join('\n- ')}`;
         await twilioClient.messages.create({
           from: TWILIO_PHONE_NUMBER,
-          to: phoneNumber,
+          to: TEST_PHONE_NUMBER, // Hard-coded phone number
           body: messageBody,
         });
 
-        logger.log(`Daily reminder sent to ${phoneNumber} for user ${userId}`);
+        logger.log('Daily reminder sent successfully.');
       }
-
     } catch (error) {
       logger.error('Error sending reminders:', error.message);
     }
   });
+
 /* Function 3: Twilio sendRemindsOnChange
   - Activated by updates to Firestore 'fridge'
   - Checks Firestore 'fridge' for reminderDate on the same day
   - Uses Twilio to send message to user
 */
-
 export const sendRemindersOnChange = functions.firestore
-  .document('users/{userId}/fridge/{itemId}')  // Adjust Firestore path according to your structure
+  .document('fridge/{itemId}')
   .onWrite(async (change, context) => {
+    // Create a date object for the current day
     const now = new Date();
     const startOfDay = new Date(now.setHours(0, 0, 0, 0));
     const endOfDay = new Date(now.setHours(23, 59, 59, 999));
 
     try {
+      // Check for reminderDate in fridge
       const afterData = change.after.exists ? change.after.data() : null;
-
+      
       if (!afterData || !afterData.reminderDate) {
         logger.log('No valid reminder data found in the change.');
         return;
       }
 
+      // Convert Firestore Timestamp to Date and check if it's due today
       const reminderDate = new Date(afterData.reminderDate.toDate());
-      const isDueToday = reminderDate >= startOfDay && reminderDate <= endOfDay;
+      const isDueToday =
+        reminderDate >= startOfDay && reminderDate <= endOfDay;
 
       if (!isDueToday) {
         logger.log('No reminders due today based on the change.');
         return;
       }
 
-      const userId = context.params.userId;  // Get the userId from Firestore path
-      logger.log(`Fetching reminders for userId: ${userId}`);
-
-      const fridgeRef = admin.firestore().collection('users').doc(userId).collection('fridge');
+      // Query Firestore for all items due today
+      const fridgeRef = admin.firestore().collection('fridge');
       const snapshot = await fridgeRef
         .where('reminderDate', '>=', startOfDay)
         .where('reminderDate', '<=', endOfDay)
@@ -287,42 +264,116 @@ export const sendRemindersOnChange = functions.firestore
         return;
       }
 
-      // Fetch phone number from 'userProfile/{userId}' collection
-      logger.log(`Fetching user profile phone number for userId: ${userId}`);
-      const userProfileDocRef = admin.firestore().collection('userProfile').doc(userId);  // This is the user document in 'userProfile'
-      const userProfileDoc = await userProfileDocRef.get();
-
-      if (!userProfileDoc.exists) {
-        logger.error(`User profile document for ${userId} does not exist.`);
-        return;
-      }
-
-      const { phoneNumber } = userProfileDoc.data();  // Assuming phoneNumber is a field in the document
-      if (!phoneNumber) {
-        logger.warn(`User ${userId} does not have a phone number.`);
-        return;
-      }
-
-      // Build the reminder message
-      let messageBody = `Good morning! Here are your reminders for today:\n`;
+      // Get user phone number
+      /*
+      // Map to store items grouped by user UID
+      const userReminders = new Map();
 
       snapshot.forEach((doc) => {
-        const itemData = doc.data();
-        messageBody += `- ${itemData.itemName}\n`;
+        const data = doc.data();
+        const { userId, itemName } = data;
+
+        if (!userId) {
+          logger.warn(`Item "${itemName}" does not have a user ID associated.`);
+          return;
+        }
+
+        // Fetch the user's phone number from Firebase Authentication
+        admin.auth().getUser(userId)
+          .then(userRecord => {
+            const userPhone = userRecord.phoneNumber;
+
+            if (!userPhone) {
+              logger.warn(`User with UID "${userId}" does not have a phone number.`);
+              return;
+            }
+
+            if (!userReminders.has(userPhone)) {
+              userReminders.set(userPhone, []);
+            }
+
+            userReminders.get(userPhone).push(itemName);
+          })
+          .catch(error => {
+            logger.error(`Error fetching user info for UID "${userId}": ${error.message}`);
+          });
       });
 
-      // Send reminder via Twilio
-      logger.log(`Sending reminder message to ${phoneNumber}`);
+      */
+     // Wait for all phone numbers to be retrieved and send messages
+     await Promise.all([...userReminders].map(async ([phone, items]) => {
+      const messageBody = `Good morning! Here are your reminders for today:\n- ${items.join('\n- ')}`;
+
+      try {
+        await twilioClient.messages.create({
+          from: TWILIO_PHONE_NUMBER,
+          to: phone,
+          body: messageBody,
+        });
+
+        logger.log(`Reminder sent for items due today to ${phone}`);
+      } catch (error) {
+        logger.error(`Error sending message to ${phone}: ${error.message}`);
+      }
+    }));
+
+    // Delete the notifications from the fridge collection
+    const deletePromises = [];
+    snapshot.forEach((doc) => {
+      const docId = doc.id;
+      deletePromises.push(fridgeRef.doc(docId).delete());
+    });
+
+    await Promise.all(deletePromises);
+    logger.log('Sent reminders and deleted items from the fridge collection.');
+      
+    } catch (error) {
+      logger.error('Error sending reminders on Firestore change:', error.message);
+    }
+  });
+
+/*export const sendRemindersOnChange = functions.firestore
+  .document('fridge/{itemId}')
+  .onWrite(async (change, context) => {
+
+    // Creates date object of current day
+    const now = new Date();
+    const startOfDay = new Date(now.setHours(0, 0, 0, 0)); 
+    const endOfDay = new Date(now.setHours(23, 59, 59, 999)); 
+
+    try {
+      // Checks for reminderDate in fridge
+      const afterData = change.after.exists ? change.after.data() : null;
+      
+      if (!afterData || !afterData.reminderDate) {
+        logger.log('No valid reminder data found in the change.');
+        return;
+      }
+
+      // Convert Firestore Timestamp to Date and checks if on current day
+      const reminderDate = new Date(afterData.reminderDate.toDate()); 
+      const isDueToday =
+        reminderDate >= startOfDay &&
+        reminderDate <= endOfDay;
+
+      if (!isDueToday) {
+        logger.log('No reminders due today based on the change.');
+        return;
+      }
+
+      // Constructs message for item
+      const { itemName } = afterData;
+      const messageBody = `Reminder: Your item "${itemName}" is due today!`;
+
+      // Sends message with Twilio
       await twilioClient.messages.create({
         from: TWILIO_PHONE_NUMBER,
-        to: phoneNumber,
+        to: TEST_PHONE_NUMBER, //!!!!!!!!!!!!!! tmp phone 
         body: messageBody,
       });
 
-      logger.log(`Reminder sent to ${phoneNumber}`);
-
+      logger.log(`Reminder sent for item "${itemName}" to ${TEST_PHONE_NUMBER}`);
     } catch (error) {
-      logger.error('Error sending reminders on Firestore change:', error.message);
-      throw error;  // Rethrow the error so that it gets logged in Firebase functions logs
+      logger.error('Error sending reminder on Firestore change:', error.message);
     }
-  });
+});*/
