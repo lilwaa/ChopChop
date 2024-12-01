@@ -24,7 +24,8 @@ body {
     padding: 5px 10px;
     color: #333; /* Black text normally */
     transition: color 0.3s ease;
-    font-size: 16px; /* Match font size of list items */
+    font-size: 1.75rem; /* Match font size of list items */
+    gap: .5rem;
   }
   
   /* Hover effect for "add item" */
@@ -32,31 +33,36 @@ body {
     color: #e67e22; /* Orange color on hover */
   }
   
-  /* Edit mode styling for input fields 
+
   input[type="text"] {
-    background-color: transparent; 
-    border: none; 
-    border-bottom: 2px solid transparent; 
-    font-size: 16px;
-    padding: 5px 0;
+    background-color: white; 
+    font-size: 1.75rem;
     width: 100%;
     outline: none;
     color: #333; 
     transition: border-color 0.3s ease;
-  }*/
+    box-sizing: border-box;
+    /* padding-top: 15px; */
+    border-radius: 1;
+
+  }
   
   /* When in edit mode, add green line under input field */
   input[type="text"]:focus {
     border-bottom: 2px solid #2ecc71; /* Green color for the underline */
+    font-size: 1.75rem;
+    border-radius: 1;
   }
   
   /* Styles for item row when editing */
   span {
     display: inline-block;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 0px 10px;
     color: #333;
     transition: color 0.3s ease;
+    font-size: 2rem;
+    padding-top: 2.75rem;
   }
   
   /* Hover effect for item row */
@@ -99,6 +105,9 @@ body {
     margin-left: auto; /* Ensure it takes up space on the right */
   }
   
+  .store-tags{
+    padding-top: 30px;
+  }
   .store-tag {
     background-color: #e67e22; /* Orange background */
     color: white; /* White text on orange background */
@@ -170,14 +179,12 @@ body {
     background-color: #2ecc71; /* Green on hover */
   }
   
-  
   /* Existing styles for the shopping list */
   /* ... (Your existing CSS code here) ... */
   
   /* Filter Section - New Styles */
   .filter-container {
     margin-bottom: 1rem;
-    font-family: 'Arial', sans-serif;
     display: flex;
     align-items: center;
     gap: 10px; /* Adds space between the label and the dropdown */
@@ -199,7 +206,7 @@ body {
   /* Style the select element */
   .filter-container .select-dropdown {
     padding: 8px 12px;
-    font-size: 1rem;
+    font-size: 1.75rem;
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #fff;
