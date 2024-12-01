@@ -5,7 +5,7 @@ import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
 import { getDoc, doc, collection, addDoc, deleteDoc, setDoc, getDocs } from 'firebase/firestore';
 import { getUserData } from '../../firebase/userService.js';
 import { v4 } from 'uuid';
-import { Button, Dialog, DialogContent, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Modal, Box, Typography, Stack, TextField } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Modal, Box, Typography, Stack, TextField, ThemeProvider, createTheme, DialogTitle} from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -13,6 +13,7 @@ import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import '../../styles/Orders.css';
+import { styled } from '@mui/material/styles';
 
 
 function Orders() {
@@ -64,18 +65,17 @@ function Orders() {
 
     // Handle file name change: No file selected --> input file name
     const setFileData = (target) => {
-        const file = target.files[0];
-    
-        // Validate file type
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-        if (file && allowedTypes.includes(file.type)) {
-            setImageUpload(file);
-            uploadImage(file); // Trigger upload immediately after selecting the file
-        } else {
-            alert("Only JPEG/JPG/PNGs"); 
-            setImageUpload(null); // Reset the selected image
-        }
-    };
+      const file = target;
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (file && allowedTypes.includes(file.type)) {
+          setImageUpload(file);
+          uploadImage(file); // Trigger upload immediately after selecting the file
+      } else {
+          alert("Only JPEG/JPG/PNGs"); 
+          setImageUpload(null); // Reset the selected image
+      }
+  };
 
     // Receipt(image)-> Firebase Storage + store document ID
     const uploadImage = async (file) => {
@@ -546,68 +546,242 @@ const handleViewReceipt = async (receiptId) => {
     fetchReceipts();
   }, []);
 
+   // deuglifying buttons
+   const ColorButton = styled(Button)(({ theme, color }) => {
+    const darkenColor = (color) => {
+      if (color.startsWith('#')) {
+        let hex = color.substring(1);
+        let r = parseInt(hex.substring(0, 2), 16);
+        let g = parseInt(hex.substring(2, 4), 16);
+        let b = parseInt(hex.substring(4, 6), 16);
+
+        r = Math.max(0, r - 30);
+        g = Math.max(0, g - 30);
+        b = Math.max(0, b - 30);
+
+       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      }
+      return color; 
+    };
+    return {
+      fontFamily: 'AovelSansRounded, sans-serif',
+      color: 'white',
+      backgroundColor: color, 
+      '&:hover': {
+        backgroundColor: darkenColor(color), 
+      },
+      fontSize: '2rem',
+      textTransform: 'none',
+    };
+  }); 
+   // custom theme for styling dialog/modals
+   const theme = createTheme({
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            marginBottom: '16px',  // space between fields
+            '& .MuiInputLabel-root': {
+              fontFamily: 'AovelSansRounded, sans-serif',
+              fontSize: '1.5rem',
+              padding: '0 8px',
+              top: '-0.5rem',
+              backgroundColor: 'transparent',  
+            },
+            //input field box
+            '& .MuiOutlinedInput-root': {
+              height: '40px', 
+              fontFamily: 'AovelSansRounded, sans-serif',
+              borderRadius: '8px',
+
+              // unfocused state styling
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#ccc', // Light grey border when unfocused
+              },
+
+              // focused state styling
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                border: 'none',
+              },
+            },
+            //label when focused
+            '& .MuiInputLabel-root.Mui-focused': {
+              backgroundColor: 'transparent', 
+              color: '#58ac3e', 
+              transform: 'translateY(-1rem)', 
+              visibility: 'visible',
+            },
+          },
+        },
+      },
+      MuiTableContainer: {
+        styleOverrides: {
+          root: {
+            fontSize: '2rem',
+            fontFamily: 'AovelSansRounded, sans-serif',
+            borderRadius: '8px',        // Rounded corners for the table container
+            overflow: 'hidden',         // Ensure the table content does not overflow
+            boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',  // Box shadow around the table
+          },
+        },
+      },
+      MuiTable: {
+        styleOverrides: {
+          root: {
+            fontSize: '2rem',
+            fontFamily: 'AovelSansRounded, sans-serif',
+            minWidth: 650,              // Set a minimum width for the table
+            borderCollapse: 'collapse', // Collapsing borders between cells
+          },
+        },
+      },
+      MuiTableHead: {
+        styleOverrides: {
+          root: {
+            fontSize: '2rem',
+            fontFamily: 'AovelSansRounded, sans-serif',
+            backgroundColor: '#58ac3e',  // Header background color
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            backgroundColor: '#58ac3e',  // Header background color
+            color: 'white',              // Header text color
+            fontSize: '1.5rem',          // Font size for table header
+            fontWeight: 'bold',          // Bold header text
+            padding: '12px 16px',        // Padding for header cells
+          },
+          body: {
+            fontSize: '1.5rem', // Font size for table body
+            fontFamily: 'AovelSansRounded, sans-serif',         
+            padding: '12px 16px',        // Padding for body cells
+            color: '#333',               // Text color for table body
+            borderBottom: '1px solid #ddd', // Border between rows
+          },
+          root: {
+            // '&:hover': {
+            //   fontSize: '1.5rem',
+            //   fontFamily: 'AovelSansRounded, sans-serif',
+            //   backgroundColor: '#f5f5f5', // Background color when row is hovered
+            // },
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            fontFamily: 'AovelSansRounded, sans-serif', // Custom font
+            fontSize: '1.2rem', // Button font size
+            padding: '10px 20px', // Padding for buttons
+            borderRadius: '0.75rem', // Rounded corners for the button
+            textTransform: 'none', // Avoid capitalizing button text
+            '&:hover': {
+              backgroundColor: '#58ac3e', // Button hover color
+              color: 'white', // Hover text color
+            },
+          },
+        },
+      },
+    },
+  });
+  
+
   if (loading) return <div className="Budget"><h2>Loading receipts...</h2></div>;
 
 
     return (
+      <ThemeProvider theme={theme}>
         <div className="orders">
             <h2>Track Shopping </h2>
             <div className="App">
-                <Button variant="contained" onClick={() => setShowDialog(true)}>
+                <ColorButton color="#176a23" onClick={() => setShowDialog(true)}>
                     Add Grocery Trip
-                </Button>
+                </ColorButton>
             </div>
 
             {/* Form Dialog with custom class for larger size */}
             <Dialog
                 open={showDialog}
                 onClose={() => setShowDialog(false)}
-                className="custom-dialog" // Add custom class for styling
-            >
-                <Typography variant="h4" className="dialog-title">
+                className="custom-dialog" 
+                sx={{
+                  '& .MuiDialogTitle-root': {
+                    fontFamily: 'AovelSansRounded, sans-serif',
+                    backgroundColor: '#58ac3e',
+                    color: 'white',
+                    textAlign: 'center',
+                    fontSize: '2rem',
+                    padding: '16px 24px',
+                    marginBottom: '0.5rem',
+                    borderTopLeftRadius: '1rem',   
+                    borderTopRightRadius: '1rem',  
+                    borderBottomLeftRadius: '0',   
+                    borderBottomRightRadius: '0', 
+                  },
+                  '& .MuiDialogContent-root': {
+                    fontFamily: 'AovelSansRounded, sans-serif',
+                    padding: '20px',
+                    backgroundColor: 'transparent',
+                  }, 
+                   
+                  '& .MuiDialog-paper': {
+                    margin: 0,     
+                    padding: 0,    
+                    borderRadius: '1rem',
+                  },
+                }}>
+                <DialogTitle>
                     Add Receipt
-                </Typography>
+                </DialogTitle>
                 <DialogContent>
                     <Stack spacing={1} direction="row" style={{ width: '100%' }}>
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             {/* Upload Receipt Button */}
-                            <Button variant="outlined" component="label" color="secondary">
+                            <ColorButton component="label" color="#be99cd">
                               Upload Receipt
                               <input
                                 type="file"
                                 style={{ display: 'none' }} // Hide the input completely
-                                onChange={(e) => setFileData(e.target.files[0])} // Use 'files[0]' to get the selected file
+                                onChange={(e) => {
+                                  const files = e.target.files;
+                                  console.log(files[0]);
+                                  if (files && files.length > 0) {
+                                    setFileData(files[0]); // Only call setFileData if files are selected
+                                  } else {
+                                    console.warn('No file selected here');
+                                  }
+                                }}  // Use 'files[0]' to get the selected file
                               />
-                            </Button>
-                            <Typography>{imageUpload ? imageUpload.name : "No file selected"}</Typography>
+                            </ColorButton>
+                            <Typography sx={{fontFamily: 'AovelSansRounded, sans-serif', fontSize: '1.2rem',}}>{imageUpload ? imageUpload.name : "No file selected"}</Typography>
 
                             {/* Auto-parse, Manual, and Add item buttons */}
                             <div style={{ marginTop: "8px" }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
+                                <ColorButton
+                                    color="#3e5ddc"
                                     onClick={handleAutoParse}
                                     style={{ marginRight: "8px" }}
                                 >
                                     Read Receipt
-                                </Button>
+                                </ColorButton>
                                 {/* Manual Button */}
-                                <Button
-                                    variant="contained"
-                                    color="default"
+                                <ColorButton
+                                    color="#c7c7c7"
                                     onClick={handleManual} // Assuming you have a handleManual function
                                     style={{ marginRight: "8px" }}
                                 >
                                     Manual
-                                </Button>
+                                </ColorButton>
                                 {/* Add item Button */}
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
+                                <ColorButton
+                                    color="#58ac3e"
                                     onClick={handleAddItemBtn} // You can change this if it needs a different handler
                                 >
                                     Add item
-                                </Button>
+                                </ColorButton>
                             </div>
 
                             {/* Display input form if Auto-parse is clicked */}
@@ -668,7 +842,9 @@ const handleViewReceipt = async (receiptId) => {
                                                 }}
                                             />
                                             {/* Notification Bell Icon */}
-                                            <span onClick={() => handleToggleNotification(index)}>
+                                            <span onClick={() => handleToggleNotification(index)} style={{verticalAlign: 'middle', 
+                                                          position: 'relative',
+                                                          top: '-2.5rem' }}>
                                                 {item.reminderDate ? (
                                                     <NotificationsActiveIcon
                                                         style={{ cursor: 'pointer', color: 'green' }}
@@ -680,7 +856,9 @@ const handleViewReceipt = async (receiptId) => {
                                             )}
                                             </span>
                                             {/* Trash Button */}
-                                            <span onClick={() => handleDeleteRow(index)}>
+                                            <span onClick={() => handleDeleteRow(index)} style={{verticalAlign: 'middle', 
+                                                          position: 'relative',
+                                                          top: '-2.5rem' }}>
                                                 <DeleteIcon style={{ cursor: 'pointer', color: 'rgba(211, 47, 47, 0.7)' }} />
                                             </span>
                                             
@@ -697,13 +875,23 @@ const handleViewReceipt = async (receiptId) => {
                                         style={{
                                             width: "400px",
                                             backgroundColor: "white",
-                                            padding: "20px",
+                                            padding: "20px 20px 0px 20px",
                                             margin: "100px auto",
                                             borderRadius: "8px",
                                             boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                                            display: 'flex',         // Enable Flexbox layout
+                                            justifyContent: 'center', // Center horizontally
+                                            alignItems: 'center',     // Center vertically
+                                            gap: '2rem',              // Small gap between the DatePicker and Button
+                                            flexDirection: 'row',     // Ensure the DatePicker and Button are horizontally aligned
                                         }}
                                     >
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns} sx={{
+                                            '& .MuiInputBase-root': {
+                                              display: 'flex',
+                                              alignItems: 'center', // Vertically center the input content
+                                            },
+                                          }}>
                                             <DatePicker
                                                 label="Set Reminder Date"
                                                 value={
@@ -712,14 +900,17 @@ const handleViewReceipt = async (receiptId) => {
                                                         : null
                                                 }
                                                 onChange={handleReminderDateChange}
-                                                renderInput={(params) => <TextField {...params} fullWidth />}
+                                                renderInput={(params) => <TextField sx={{paddingTop: '300px' }}{...params} fullWidth />}
                                             />
                                         </LocalizationProvider>
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             onClick={handleSetAlert}
-                                            style={{ marginTop: '16px' }}
+                                            style={{ marginTop: '16px', fontSize: '1.5rem', 
+                                            display: 'flex',
+                                            alignItems: 'center', 
+                                            top: "-1.75rem"}}
                                             >
                                             Set Alert
                                         </Button>
@@ -745,11 +936,11 @@ const handleViewReceipt = async (receiptId) => {
                 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleSave} color="primary" variant="contained"> Save </Button>
-                    <Button onClick={handleCancel} color="secondary"> Cancel</Button>
-                    <Button onClick={() => setShowDialog(false)} color="primary" variant="contained">
+                    <ColorButton onClick={handleSave} color="#58ac3e"> Save </ColorButton>
+                    <ColorButton onClick={handleCancel} color="#c12020"> Cancel</ColorButton>
+                    <ColorButton onClick={() => setShowDialog(false)} color="#b32d2d" >
                         Close
-                    </Button>
+                    </ColorButton>
                 </DialogActions>
             </Dialog>
        
@@ -835,7 +1026,7 @@ const handleViewReceipt = async (receiptId) => {
               </Table>
             </TableContainer>
   
-            <Button onClick={handleCloseModal}>Close</Button>
+            <ColorButton color="#428cd2" onClick={handleCloseModal}>Close</ColorButton>
           </Box>
         </Modal>
   
@@ -854,6 +1045,7 @@ const handleViewReceipt = async (receiptId) => {
           </Box>
         </Modal>
       </div>
+    </ThemeProvider>
     );
 }
 
