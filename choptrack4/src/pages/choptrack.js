@@ -28,6 +28,7 @@ function App() {
   // Fetch user data on component mount
   useEffect(() => {
     fetchUserData();
+    document.title = 'ChopTrack';
   }, []);  // Empty dependency array ensures this runs once on mount
 
   return (
