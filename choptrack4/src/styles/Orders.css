@@ -1,5 +1,12 @@
 /* Orders.css */
+@font-face {
+  font-family: 'AovelSansRounded';
+  src: url('./aovel-sans-rounded-font/AovelSansRounded-rdDL.ttf');
+}
 
+* {
+  font-family: 'AovelSansRounded', sans-serif;
+}
 /* Custom modal size (both width and height) */
 .custom-dialog .MuiDialog-paper {
     width: 90%; /* Adjust width to your preference */

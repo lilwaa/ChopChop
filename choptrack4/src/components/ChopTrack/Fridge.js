@@ -376,18 +376,29 @@ function Fridge() {
        {/* Add Alert Modal */}
        <Dialog open={openAddAlertDialog} onClose={() => setOpenAddAlertDialog(false)}
         sx={{
-          '& .MuiDialogTitle-root': {
+        '& .MuiDialogTitle-root': {
             fontFamily: 'AovelSansRounded, sans-serif',
             backgroundColor: '#58ac3e',
             color: 'white',
             textAlign: 'center',
             fontSize: '2rem',
             padding: '16px 24px',
+            marginBottom: '0.5rem',
+            borderTopLeftRadius: '1rem',   
+            borderTopRightRadius: '1rem',  
+            borderBottomLeftRadius: '0',   
+            borderBottomRightRadius: '0', 
           },
           '& .MuiDialogContent-root': {
             fontFamily: 'AovelSansRounded, sans-serif',
             padding: '20px',
             backgroundColor: 'transparent',
+          }, 
+            
+          '& .MuiDialog-paper': {
+            margin: 0,     
+            padding: 0,    
+            borderRadius: '1rem',
           },
           '& .MuiDialogActions-root': {
             fontFamily: 'AovelSansRounded, sans-serif',
@@ -494,19 +505,29 @@ function Fridge() {
       {/* Confirmation Dialog */}
       <Dialog open={openConfirmDeletionDialog} onClose={handleCancelDeletion}sx={{
           '& .MuiDialogTitle-root': {
-            fontFamily: 'AovelSansRounded, sans-serif',
-            backgroundColor: '#58ac3e',
-            color: 'white',
-            textAlign: 'center',
-            fontSize: '2rem',
-            padding: '16px 24px',
-          },
-          '& .MuiDialogContent-root': {
-            fontFamily: 'AovelSansRounded, sans-serif',
-            padding: '20px',
-            backgroundColor: 'transparent',
-            fontSize: '2rem',
-          },
+              fontFamily: 'AovelSansRounded, sans-serif',
+              backgroundColor: '#58ac3e',
+              color: 'white',
+              textAlign: 'center',
+              fontSize: '2rem',
+              padding: '16px 24px',
+              marginBottom: '0.5rem',
+              borderTopLeftRadius: '1rem',   
+              borderTopRightRadius: '1rem',  
+              borderBottomLeftRadius: '0',   
+              borderBottomRightRadius: '0', 
+            },
+            '& .MuiDialogContent-root': {
+              fontFamily: 'AovelSansRounded, sans-serif',
+              padding: '20px',
+              backgroundColor: 'transparent',
+            }, 
+              
+            '& .MuiDialog-paper': {
+              margin: 0,     
+              padding: 0,    
+              borderRadius: '1rem',
+            },
           '& .MuiDialogActions-root': {
             fontFamily: 'AovelSansRounded, sans-serif',
             padding: '16px 24px',
