@@ -948,7 +948,7 @@ input[type="text"] {
   border: none; 
   border-bottom: 2px solid transparent; 
   font-size: 16px;
-  padding: 5px 0;
+  padding: 5px 5px;
   width: 100%;
   outline: none;
   color: #333; 
@@ -964,7 +964,7 @@ input[type="email"] {
   border: none; 
   border-bottom: 2px solid transparent; 
   font-size: 16px;
-  padding: 5px 0;
+  padding: 5px 5px;
   width: 100%;
   outline: none;
   color: #333; 
@@ -979,7 +979,7 @@ input[type="password"] {
   border: none; 
   border-bottom: 2px solid transparent; 
   font-size: 16px;
-  padding: 5px 0;
+  padding: 5px 5px;
   width: 100%;
   outline: none;
   color: #333; 
@@ -995,7 +995,7 @@ input[type="tel"] {
   border: none; 
   border-bottom: 2px solid transparent; 
   font-size: 16px;
-  padding: 5px 0;
+  padding: 5px 5px;
   width: 100%;
   outline: none;
   color: #333; 
@@ -1004,6 +1004,41 @@ input[type="tel"] {
 input[type="tel"]:focus {
   border-bottom: 2px solid #2ecc71; /* Green color for the underline */
 }
+
+
+
+
+input[type="number"] {
+  background-color: white; 
+  border: none; 
+  border-bottom: 2px solid transparent; 
+  font-size: 16px;
+  padding: 5px 15px;
+  width: 100%;
+  outline: none;
+  color: #333; 
+  transition: border-color 0.3s ease;
+}
+input[type="number"]:focus {
+  border-bottom: 2px solid #2ecc71; /* Green color for the underline */
+}
+
+
+input[type="date"] {
+  background-color: white; 
+  border: none; 
+  border-bottom: 2px solid transparent; 
+  font-size: 16px;
+  padding: 5px 15px;
+  width: 100%;
+  outline: none;
+  color: #333; 
+  transition: border-color 0.3s ease;
+}
+input[type="date"]:focus {
+  border-bottom: 2px solid #2ecc71; /* Green color for the underline */
+}
+
 
 .form-group {
   margin-bottom: 0px;

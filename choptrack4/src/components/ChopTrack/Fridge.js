@@ -3,9 +3,12 @@ import { db } from '../../firebase/firebaseConfig.js';
 import {getUserData} from '../../firebase/userService.js';
 import { collection, getDocs, doc, deleteDoc, addDoc } from 'firebase/firestore';
 import Calendar from 'react-calendar';
-import { Checkbox, FormControlLabel, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Checkbox, FormControlLabel, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, backdropClasses,  ThemeProvider, createTheme  } from '@mui/material';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/Fridge.css';
+import { styled } from '@mui/material/styles';
+
+
 
 function Fridge() {
   const [groceryItems, setGroceryItems] = useState([]);
@@ -229,7 +232,86 @@ function Fridge() {
     setOpenAddAlertDialog(true);
   };
 
+
+  // deuglifying buttons
+  const ColorButton = styled(Button)(({ theme, color }) => {
+    const darkenColor = (color) => {
+      if (color.startsWith('#')) {
+        let hex = color.substring(1);
+        let r = parseInt(hex.substring(0, 2), 16);
+        let g = parseInt(hex.substring(2, 4), 16);
+        let b = parseInt(hex.substring(4, 6), 16);
+
+        r = Math.max(0, r - 30);
+        g = Math.max(0, g - 30);
+        b = Math.max(0, b - 30);
+
+       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      }
+      return color; 
+    };
+    return {
+      fontFamily: 'AovelSansRounded, sans-serif',
+      color: 'white',
+      backgroundColor: color, 
+      '&:hover': {
+        backgroundColor: darkenColor(color), 
+      },
+      fontSize: '2rem',
+      textTransform: 'none',
+    };
+  }); 
+  
+  // custom theme for styling dialog/modals
+  const theme = createTheme({
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            marginBottom: '16px',  // space between fields
+            '& .MuiInputLabel-root': {
+              fontFamily: 'AovelSansRounded, sans-serif',
+              fontSize: '1.5rem',
+              padding: '0 8px',
+              top: '-0.5rem',
+              backgroundColor: 'transparent',  
+            },
+            //input field box
+            '& .MuiOutlinedInput-root': {
+              height: '40px', 
+              fontFamily: 'AovelSansRounded, sans-serif',
+              borderRadius: '8px',
+
+              // unfocused state styling
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#ccc', // Light grey border when unfocused
+              },
+
+              // focused state styling
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                border: 'none',
+              },
+            },
+            //label when focused
+            '& .MuiInputLabel-root.Mui-focused': {
+              backgroundColor: 'transparent', 
+              color: '#58ac3e', 
+              transform: 'translateY(-1rem)', 
+              visibility: 'visible',
+            },
+            //label of required fields is below the text field
+            '& .MuiInputLabel-root.Mui-required': {
+              top: '-3.5rem',
+              paddingRight: '24px',  
+            },
+          },
+        },
+      },
+    },
+  });
+
   return (
+    <ThemeProvider theme={theme}>
     <div className="Fridge">
       <h2 className="title">Track Grocery Alerts</h2>
       
@@ -244,9 +326,9 @@ function Fridge() {
 
         {/* Right side: List of items for the selected date */}
         <div className="grocery-list">
-          <h3>Items Due on {selectedDate ? selectedDate.toLocaleDateString() : ''}</h3>
-          {itemsOnSelectedDate.length === 0 ? (
-            <p>No items due on this date.</p>
+          <h3> {selectedDate ? "Items due on: " + selectedDate.toLocaleDateString() : 'Select a date.'}</h3>
+          {itemsOnSelectedDate.length === 0 && selectedDate ? (
+            <p>No items due.</p>
           ) : (
             <ul>
               {itemsOnSelectedDate.map(item => (
@@ -260,6 +342,14 @@ function Fridge() {
                       />
                     }
                     label={formatItemText(item)} // Display the formatted item text
+                    sx={{
+                      '& .MuiFormControlLabel-label': {
+                        fontFamily: 'AovelSansRounded, sans-serif',
+                        fontSize: '1.5rem',       // Adjust font size
+                        lineHeight: '1.0',         // Adjust line height to control the height of the label
+                        padding: '0 0',          // Adjust padding if needed
+                      },
+                    }}
                   />
                 </li>
               ))}
@@ -271,20 +361,47 @@ function Fridge() {
       {/* Buttons Container */}
       <div className="button-container">
         <div className="refresh-button-container">
-          <Button variant="contained" color="primary" onClick={handleRefreshClick}>
+          <ColorButton color="#58ac3e" variant="contained" onClick={handleRefreshClick}>
             Refresh
-          </Button>
+          </ColorButton>
         </div>
         
         {/* Add Alert Button */}
         <div className="add-alert-button-container">
-          <Button variant="contained" color="secondary" onClick={handleAddAlertClick}>
+          <ColorButton variant="contained" color="#da7b20" onClick={handleAddAlertClick}>
             Add Alert
-          </Button>
+          </ColorButton>
         </div>
       </div>
        {/* Add Alert Modal */}
-       <Dialog open={openAddAlertDialog} onClose={() => setOpenAddAlertDialog(false)}>
+       <Dialog open={openAddAlertDialog} onClose={() => setOpenAddAlertDialog(false)}
+        sx={{
+          '& .MuiDialogTitle-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            backgroundColor: '#58ac3e',
+            color: 'white',
+            textAlign: 'center',
+            fontSize: '2rem',
+            padding: '16px 24px',
+          },
+          '& .MuiDialogContent-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            padding: '20px',
+            backgroundColor: 'transparent',
+          },
+          '& .MuiDialogActions-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            padding: '16px 24px',
+            backgroundColor: 'transparent',
+            display: 'flex',
+            justifyContent: 'space-between',
+          },
+          '& .MuiButton-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            textTransform: 'none',
+            fontSize: '2rem',
+          },
+        }}>
         <DialogTitle>Add New Alert</DialogTitle>
         <DialogContent>
           <form onSubmit={handleFormSubmit}>
@@ -316,8 +433,10 @@ function Fridge() {
               onChange={handleInputChange}
               required
               margin="normal"
-              InputLabelProps={{
-                shrink: true,
+              sx={{
+                '& .MuiInputLabel-root': {
+                  visibility: 'hidden',  //label hidden until focused
+                },
               }}
             />
             <TextField
@@ -361,33 +480,61 @@ function Fridge() {
               margin="normal"
             />
             <DialogActions>
-              <Button onClick={() => setOpenAddAlertDialog(false)} color="primary">
+              <ColorButton color="#da7b20" onClick={() => setOpenAddAlertDialog(false)}>
                 Cancel
-              </Button>
-              <Button type="submit" color="secondary">
+              </ColorButton>
+              <ColorButton color="#117c56" type="submit">
                 Add Alert
-              </Button>
+              </ColorButton>
             </DialogActions>
           </form>
         </DialogContent>
       </Dialog>
 
       {/* Confirmation Dialog */}
-      <Dialog open={openConfirmDeletionDialog} onClose={handleCancelDeletion}>
+      <Dialog open={openConfirmDeletionDialog} onClose={handleCancelDeletion}sx={{
+          '& .MuiDialogTitle-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            backgroundColor: '#58ac3e',
+            color: 'white',
+            textAlign: 'center',
+            fontSize: '2rem',
+            padding: '16px 24px',
+          },
+          '& .MuiDialogContent-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            padding: '20px',
+            backgroundColor: 'transparent',
+            fontSize: '2rem',
+          },
+          '& .MuiDialogActions-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            padding: '16px 24px',
+            backgroundColor: 'transparent',
+            display: 'flex',
+            justifyContent: 'space-between',
+          },
+          '& .MuiButton-root': {
+            fontFamily: 'AovelSansRounded, sans-serif',
+            textTransform: 'none',
+            fontSize: '2rem',
+          },
+        }}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <p>Are you sure you want to remove the alert for this item?</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDeletion} color="primary">
+          <ColorButton onClick={handleCancelDeletion} color="#da7b20">
             Cancel
-          </Button>
-          <Button onClick={handleDeleteConfirmation} color="secondary">
+          </ColorButton>
+          <ColorButton onClick={handleDeleteConfirmation} color="#117c56">
             Confirm
-          </Button>
+          </ColorButton>
         </DialogActions>
       </Dialog>
     </div>
+    </ThemeProvider>
   );
 }
 

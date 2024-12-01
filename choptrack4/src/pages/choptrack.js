@@ -35,7 +35,7 @@ function App() {
 
       {/* ChopTrack Header */}
       <div className="ct-header">
-        {userName ? `Hello ${userName}! Welcome to ChopTrack :)` : 'Hello! Welcome to ChopTrack :)'}  {/* Display user's name if available */}
+        {userName ? `Hello, ${userName}! Welcome to ChopTrack :)` : 'Hello! Welcome to ChopTrack :)'}  {/* Display user's name if available */}
       </div>
 
       {/* Grid Layout */}

@@ -1,4 +1,13 @@
 /* Fridge.css */
+@font-face {
+  font-family: 'AovelSansRounded';
+  src: url('./aovel-sans-rounded-font/AovelSansRounded-rdDL.ttf');
+}
+
+* {
+  font-family: 'AovelSansRounded', sans-serif;
+}
+
 
 .Fridge {
     display: flex;
@@ -9,7 +18,7 @@
   
   .title {
     text-align: center;
-    font-size: 24px;
+    font-size: 3rem;
     font-weight: bold;
     margin-bottom: 20px;
   }
@@ -63,4 +72,3 @@
   .add-alert-button-container {
     margin-top: 10px; /* Space between the buttons */
   }
-  

@@ -18,13 +18,14 @@
   align-items: center;
   position: relative; 
   justify-content: space-between;
+  gap: 2rem;
 }
 
 /* Search icon */
 .search-icon {
   color: #6b7280;
   font-size: 2rem; 
-  margin-right: 10px; 
+  margin-right: 20px; 
   flex-shrink: 0;
 }
 
@@ -35,8 +36,9 @@
   font-size: 2rem;
   flex-grow: 1;  
   padding: 2rem; 
-  margin-left: 5px; 
+  margin-left: 1.75rem; 
   outline: none;
+  border-radius: 0;
 }
 
 
