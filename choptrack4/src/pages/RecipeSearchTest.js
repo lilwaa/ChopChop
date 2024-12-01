@@ -90,6 +90,7 @@ function RecipeSearch() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false); 
 
   // Replace with your Edamam API credentials
   const APP_ID = '1f4699db';
@@ -372,20 +373,32 @@ function RecipeSearch() {
           </div>
         </div>
       </div>
-
-      <div className="mb-6">
-        {Object.entries(filterGroups).map(([key, group]) => (
-          <FilterGroup
-            key={key}
-            title={group.title}
-            options={group.options}
-            expanded={expandedGroups[key]}
-            onToggle={() => toggleGroup(key)}
-            selectedOptions={selectedFilters[key]}
-            onOptionChange={(option) => handleOptionChange(key, option)}
-          />
-        ))}
+      <div class="button-container">
+        <button
+        onClick={() => setIsFiltersVisible(!isFiltersVisible)}
+        className="filter-toggle-button mb-4 p-2 bg-blue-500 text-white">
+          {isFiltersVisible ? 'Hide filters' : 'See filters...'}
+        </button>
       </div>
+
+        {/* Conditionally render the filter groups with animation */}
+      <div
+        className={`filter-toggle ${isFiltersVisible ? 'filter-toggle-visible' : ''} mb-6`}>
+        {isFiltersVisible && (
+          Object.entries(filterGroups).map(([key, group]) => (
+            <FilterGroup
+              key={key}
+              title={group.title}
+              options={group.options}
+              expanded={expandedGroups[key]}
+              onToggle={() => toggleGroup(key)}
+              selectedOptions={selectedFilters[key]}
+              onOptionChange={(option) => handleOptionChange(key, option)}
+            />
+          ))
+        )}
+      </div>
+    
 
       <div className="button-container">
         <button

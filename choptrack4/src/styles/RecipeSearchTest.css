@@ -75,6 +75,7 @@
     padding: 0.5rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
+    text-align: center; 
   }
   
   
@@ -245,7 +246,7 @@
     background-color: #8e311a93;
     color: white;
     padding: 1rem 3rem;
-    font-size: 1.125rem;
+    font-size: 2rem;
     font-weight: 500;
     border: none;
     border-radius: 0.5rem;
@@ -275,3 +276,38 @@
     text-align: center;
     margin: 1rem 0;
   }
+
+/* filter toggling */
+.filter-toggle-button {
+  background-color: #2ecc71;
+  color: white; /* Removed extra quotes */
+  padding: 1rem 3rem;
+  font-size: 2rem;
+  border-radius: .75rem;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 500;
+}
+
+.filter-toggle-button:hover {
+  background-color: #1f7f47;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Add space between filter content and see more button */
+.filter-toggle {
+  overflow: hidden;
+  opacity: 0;         
+  height: auto;          
+  transition: opacity 1s ease, height 1s ease; 
+  margin-bottom: 1rem;
+}
+.filter-toggle-visible {
+  opacity: 1;         /* Fade in */
+  height: auto;      /* Expand height */
+  transition: opacity 1s ease, height 1s ease; /* Smooth transition */
+}
+
+
