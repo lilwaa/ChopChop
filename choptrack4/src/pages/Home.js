@@ -74,13 +74,6 @@ function Home() {
                                 Find recipes based on ingredients you already have, saving you time and money.
                             </p>
                         </div>
-                        <div className="feature-box">
-                            <span className="feature-icon">🛒</span>
-                            <h3 className="feature-title">ChopHealth</h3>
-                            <p className="feature-description">
-                                Stay organized with grocery tracking, reminders for expiring ingredients, and auto-generated shopping lists.
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
