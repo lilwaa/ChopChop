@@ -1034,7 +1034,7 @@ const handleViewReceipt = async (receiptId) => {
         <Modal open={openReceiptModal} onClose={() => setOpenReceiptModal(false)}>
           <Box sx={{
               position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-              backgroundColor: 'white', padding: '20px', boxShadow: 24 }}>
+              backgroundColor: 'white', padding: '20px', boxShadow: 24, maxWidth: '80vw', maxHeight: '80vh', overflow: 'auto', borderRadius: '1rem',}}>
             <h2>Receipt Details</h2>
             {loadingImage ? (
               <p>Loading image...</p>
