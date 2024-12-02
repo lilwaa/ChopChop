@@ -126,7 +126,13 @@ function Orders() {
     
             // Fetch the existing receipt document
             const userDocRef = doc(db, 'users', userData.uid);
-            const receiptDocRef = doc(userDocRef, 'receipts', documentId);
+            if (documentId){
+              const receiptDocRef = doc(userDocRef, 'receipts', documentId);
+            }
+            else{
+              const receiptDocRef = doc(userDocRef, 'receipts', v4() )
+            }
+            
             const receiptSnapshot = await getDoc(receiptDocRef);
     
             let receiptData = {
