@@ -734,7 +734,7 @@ const handleViewReceipt = async (receiptId) => {
                   },
                 }}>
                 <DialogTitle>
-                    Add Receipt
+                    ChopTrack: Add Grocery Trip Details & Receipt
                 </DialogTitle>
                 <DialogContent>
                     <Stack spacing={1} direction="row" style={{ width: '100%' }}>
