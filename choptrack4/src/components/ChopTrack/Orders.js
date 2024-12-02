@@ -123,14 +123,14 @@ function Orders() {
                 console.error("No valid items to save.");
                 return;
             }
-    
+            let receiptDocRef
             // Fetch the existing receipt document
             const userDocRef = doc(db, 'users', userData.uid);
             if (documentId){
-              const receiptDocRef = doc(userDocRef, 'receipts', documentId);
+              receiptDocRef = doc(userDocRef, 'receipts', documentId);
             }
             else{
-              const receiptDocRef = doc(userDocRef, 'receipts', v4() )
+              receiptDocRef = doc(userDocRef, 'receipts', v4() )
             }
             
             const receiptSnapshot = await getDoc(receiptDocRef);
