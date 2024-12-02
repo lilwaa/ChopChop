@@ -140,7 +140,7 @@ function Orders() {
                     store: { name: storeName },
                     transaction: { datetime: date },
                     total: { grand_total: totalCost },
-                    items: {} // Items will be built dynamically
+                    items: {  } // Items will be built dynamically
                 },
                 timestamp: new Date() // timestamp of form submission
             };
@@ -975,7 +975,7 @@ const handleViewReceipt = async (receiptId) => {
                     <TableRow key={id}>
                       <TableCell>{transaction ? new Date(transaction.datetime.seconds * 1000).toLocaleDateString() : 'Unknown'}</TableCell>
                       <TableCell>{store ? store.name : 'Unknown Store'}</TableCell>
-                      <TableCell>{total ? total.grand_total.toFixed(2) : 'N/A'}</TableCell>
+                      <TableCell>{total ? parseFloat(total.grand_total).toFixed(2) : 'N/A'}</TableCell>
                       <TableCell>
                         <Button onClick={() => handleOpenModal(receiptInfo)}>View ({itemCount})</Button>
                       </TableCell>
@@ -1024,7 +1024,7 @@ const handleViewReceipt = async (receiptId) => {
                         <TableCell>{item.unitPrice ? (typeof item.unitPrice === 'object' ? JSON.stringify(item.unitPrice) : item.unitPrice) : 'N/A'}</TableCell>
                         <TableCell>{item.savings || 0}</TableCell>
                         <TableCell>{item.other ? (typeof item.other === 'object' ? JSON.stringify(item.other) : item.other) : 'N/A'}</TableCell>
-                        <TableCell>{item.cost !== undefined ? item.cost.toFixed(2) : 'N/A'}</TableCell>
+                        <TableCell>{item.cost !== undefined ? parseFloat(item.cost).toFixed(2) : 'N/A'}</TableCell>
                       </TableRow>
                     );
                   })}
