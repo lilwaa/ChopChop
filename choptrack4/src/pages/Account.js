@@ -94,11 +94,12 @@ const AccountPage = () => {
               console.log(error);
             });
           }
-          window.location.reload();
+          else{
+            window.location.reload();
+          }
         }).catch((error) => {
           console.error("Error updating profile:", error);
         });
-        window.location.reload();
       }
       else{
         nameField.removeAttribute("readonly");
