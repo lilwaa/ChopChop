@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // css styling
-import '../../styles/animate.css';
-import '../../styles/icomoon.css';
-import '../../styles/bootstrap.css';
-import '../../styles/flexslider.css';
 import '../../styles/style.css';
 
-import {app, auth, db} from "../../firebase/firebaseConfig.js";
-import { getDoc, getDocs, doc, collection, addDoc, deleteDoc, setDoc, writeBatch} from 'firebase/firestore';
-import {EmailAuthProvider, deleteUser, reauthenticateWithCredential, getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
+import { auth, db} from "../../firebase/firebaseConfig.js";
+import {  getDocs, doc, collection, deleteDoc, writeBatch} from 'firebase/firestore';
+import {EmailAuthProvider, deleteUser, reauthenticateWithCredential} from "firebase/auth"; 
 import { getStorage, ref, listAll, deleteObject } from "firebase/storage";
-//import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
-//import { getFirestore, doc, getDoc, setDoc, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
-//import {EmailAuthProvider, reauthenticateWithCredential, deleteUser, getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from   "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"; 
 import ErrorPopup from './ErrorPopup.js';
 
 //FOLLOWING IS FOR DELETION FROM FIRESTORE:
@@ -96,6 +89,10 @@ async function deleteProf(uid) {
   }
   
   function ReauthenticateForDeletionModal({ closeReauthModal }) {
+    // references to modal and overlay
+    const modalRef = useRef(null);
+    const overlayRef = useRef(null);
+
     const [isOpen, setIsOpen] = useState(true);
     const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
     const [email, setEmail] = useState('');
@@ -107,8 +104,35 @@ async function deleteProf(uid) {
         setIsOpen(false);
         closeReauthModal();
     }
-     // changing error message depended on what error we put in
-  
+     // close modal if clicking outside the modal (on the overlay)
+     const handleClickOutside = (event) => {
+      if (overlayRef.current && !modalRef.current.contains(event.target)) {
+          closeModal(); // close modal if the click is outside the modal content but inside the overlay
+      }
+    };
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape' && !isErrorPopupOpen) {
+            closeModal(); // close modal on Escape key press
+        }
+    };
+    useEffect(() => {
+      if(isErrorPopupOpen){
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+          return;
+      }else{
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscKey);
+      }
+     
+      // cleanup on unmount
+      return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+           return () => {
+        };
+      };
+    }, [isOpen, isErrorPopupOpen]);
   
     // open/close error popup
     const openErrorPopup = () => setIsErrorPopupOpen(true);
@@ -151,7 +175,8 @@ async function deleteProf(uid) {
     return (
       <>
         {isOpen && (
-          <div id="login-modal" className="popup" style={{ zIndex: 999, display: 'block' }}>
+          <div className='popup-overlay' ref={overlayRef}>
+          <div id="login-modal" className="popup" style={{ zIndex: 999, display: 'block' }} ref={modalRef}>
             <br />
             <h3 style={{ textAlign: 'center' }}>Reauthenticate your account...</h3>
             <span className="close" id="close-login-button" onClick={closeModal}>&times;</span>
@@ -183,6 +208,7 @@ async function deleteProf(uid) {
                 Login
               </button>
             </form>
+          </div>
           </div>
         )}
         {/* error popup */}

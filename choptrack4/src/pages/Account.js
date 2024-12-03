@@ -4,27 +4,34 @@ import React, { useEffect, useState } from 'react';
 import '../styles/style.css';
 
 // firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, collection } from 'firebase/firestore';
-import { getAuth, sendPasswordResetEmail, verifyBeforeUpdateEmail} from "firebase/auth"; 
-//import { getFirestore, doc, getDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-//import { getAuth, sendPasswordResetEmail, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import {app, auth, db} from "../firebase/firebaseConfig.js";
+import { doc, getDoc, updateDoc, collection } from 'firebase/firestore';
+import { sendPasswordResetEmail, verifyBeforeUpdateEmail} from "firebase/auth"; 
+import {auth, db} from "../firebase/firebaseConfig.js";
 import DeletePopup from '../components/Authentication/DeletePopup.js';
+import ErrorPopup from '../components/Authentication/ErrorPopup.js';
 
 
 const AccountPage = () => {
-  const [user, setUser] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
+const [user, setUser] = useState(null);
+const [userProfile, setUserProfile] = useState(null);
 
-  //delete popup stuff
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+//delete popup stuff
+const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+//error popup
+const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
+const [errorMess, setErrorMess] = useState('');
 
-  //open/close delete popup
-  const openDeletePopup = () => {
-    setIsDeletePopupOpen(true); // open forgot pass modal
-  };
-  const closeDeletePopup = () => setIsDeletePopupOpen(false);
+//open/close delete popup
+const openDeletePopup = () => {
+  setIsDeletePopupOpen(true); // open forgot pass modal
+};
+const closeDeletePopup = () => setIsDeletePopupOpen(false);
+
+//open/close error popup
+const openErrorPopup = () => {
+  setIsErrorPopupOpen(true); // open forgot pass modal
+};
+const closeErrorPopup = () => setIsErrorPopupOpen(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -115,6 +122,8 @@ const AccountPage = () => {
     const email = user.email;
     sendPasswordResetEmail(auth, email).then(() => {
       console.log("Password reset email sent");
+      setErrorMess("Password reset email sent!");
+      openErrorPopup();
     }).catch((error) => {
       const errorElement = document.getElementById("signupErrorContent");
       errorElement.textContent = error.code;
@@ -208,9 +217,13 @@ const AccountPage = () => {
           
         </div>
       </div>}
-      {/* error popup */}
+      {/* delete popup */}
       {isDeletePopupOpen && (
         <DeletePopup closeDeletePopup={closeDeletePopup} />
+      )}
+       {/* error popup */}
+       {isErrorPopupOpen && (
+        <ErrorPopup error={errorMess} closeErrorPopup={closeErrorPopup} />
       )}
     </>
   );

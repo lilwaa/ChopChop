@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 // css styling
-import '../../styles/animate.css';
-import '../../styles/icomoon.css';
-import '../../styles/bootstrap.css';
-import '../../styles/flexslider.css';
 import '../../styles/style.css';
 
-//import firebase stuff
-import {app, auth, db} from "../../firebase/firebaseConfig.js";
-import { getDoc, doc, collection, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
-import {getAuth, updateProfile, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
-//import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
-//import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
-//import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from   "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"; 
+//firebase imports
+import { auth, db} from "../../firebase/firebaseConfig.js";
+import { doc, collection, setDoc } from 'firebase/firestore';
+import { updateProfile, sendEmailVerification, createUserWithEmailAndPassword, } from "firebase/auth"; 
 import ErrorPopup from './ErrorPopup.js';
 
 function SignupModal() {
+    // references to modal and overlay
+    const modalRef = useRef(null);
+    const overlayRef = useRef(null);
+
     const [isOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
@@ -36,9 +33,40 @@ function SignupModal() {
     };
     const closeErrorPopup = () => setIsErrorPopupOpen(false);
 
+    // close modal if clicking outside the modal (on the overlay)
+    const handleClickOutside = (event) => {
+      if (overlayRef.current && !modalRef.current.contains(event.target)) {
+          closeModal(); // close modal if the click is outside the modal content but inside the overlay
+      }
+    };
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape' && !isErrorPopupOpen) {
+            closeModal(); // close modal on Escape key press
+        }
+    };
+
+    useEffect(() => {
+      if(isErrorPopupOpen){
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+          return;
+      }else{
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscKey);
+      }
+     
+      // cleanup on unmount
+      return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+           return () => {
+        };
+      };
+    }, [isOpen, isErrorPopupOpen]);
+
     const signupHandler = (e) => {
         e.preventDefault();
-        if (password==confirmedPass){
+        if (password===confirmedPass){
           createUserWithEmailAndPassword(auth, email, password).then(
             cred => {
                 console.log("user creation");
@@ -97,8 +125,8 @@ function SignupModal() {
   return (
     <>
       {isOpen && (
-        <div className="popup-overlay" id="popupOverlay">
-        <div id="signup-modal" className="popup" style={{ zIndex: 1, display: 'block' }}>
+        <div className="popup-overlay" id="popupOverlay" ref={overlayRef}>
+        <div id="signup-modal" className="popup" style={{ zIndex: 1, display: 'block' }} ref={modalRef}>
           <br />
           <h3 style={{ textAlign: 'center' }}>Sign up</h3>
           <span className="close" id="close-signup-button" onClick={closeModal}>&times;</span>
@@ -156,6 +184,9 @@ function SignupModal() {
             >
               Sign up
             </button>
+            <span>
+              What do we do with your information?*
+            </span>
           </form>
         </div>
         </div>

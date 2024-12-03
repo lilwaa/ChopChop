@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 // css styling
 import '../../styles/animate.css';
 import '../../styles/icomoon.css';
@@ -6,9 +6,8 @@ import '../../styles/bootstrap.css';
 import '../../styles/flexslider.css';
 import '../../styles/style.css';
 
-import {app, auth, db} from "../../firebase/firebaseConfig.js";
-import { getDoc, doc, collection, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
-import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
+import { auth} from "../../firebase/firebaseConfig.js";
+import { signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
 //import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
 //import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
 //import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from   "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"; 
@@ -16,6 +15,10 @@ import ErrorPopup from './ErrorPopup.js';
 
 
 function LoginModal() {
+    // references to modal and overlay
+    const modalRef = useRef(null);
+    const overlayRef = useRef(null);
+
     const [isOpen, setIsOpen] = useState(false);
     const [isForgotPassModalOpen, setIsForgotPassModalOpen] = useState(false);
     const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
@@ -39,6 +42,37 @@ function LoginModal() {
       setIsErrorPopupOpen(true); // open forgot pass modal
     };
     const closeErrorPopup = () => setIsErrorPopupOpen(false);
+
+    // close modal if clicking outside the modal (on the overlay)
+    const handleClickOutside = (event) => {
+      if (overlayRef.current && !modalRef.current.contains(event.target)) {
+          closeModal(); // close modal if the click is outside the modal content but inside the overlay
+      }
+    };
+      const handleEscKey = (event) => {
+        if (event.key === 'Escape' && !isErrorPopupOpen) {
+            closeModal(); // close modal on Escape key press
+        }
+    };
+    useEffect(() => {
+      if(isErrorPopupOpen || isForgotPassModalOpen){
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+          return;
+      }else{
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleEscKey);
+      }
+     
+      // cleanup on unmount
+      return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener('keydown', handleEscKey);
+           return () => {
+        };
+      };
+    }, [isOpen, isErrorPopupOpen, isForgotPassModalOpen]);
+
 
     //handling login form submission
     const loginHandler = (e) => {
@@ -64,8 +98,8 @@ function LoginModal() {
   return (
     <>
       {isOpen && !isForgotPassModalOpen && (
-        <div className="popup-overlay" id="popupOverlay">
-        <div id="login-modal" className="popup" style={{ zIndex: 1, display: 'block' }}>
+        <div className="popup-overlay" id="popupOverlay" ref={overlayRef}>
+        <div id="login-modal" className="popup" style={{ zIndex: 1, display: 'block' }} ref={modalRef}>
           <br />
           <h3 style={{ textAlign: 'center' }}>Log In</h3>
           <span className="close" id="close-login-button" onClick={closeModal}>&times;</span>
@@ -125,6 +159,10 @@ function LoginModal() {
 }
 
 function ForgotPassModal({ closeForgotPassModal }) {
+    // references to modal and overlay
+    const modalRef = useRef(null);
+    const overlayRef = useRef(null);
+
     //modal visibility
     const [isPassModalOpen, setIsPassModalOpen] = useState(true);
     const [email, setEmail] = useState('');
@@ -139,6 +177,30 @@ function ForgotPassModal({ closeForgotPassModal }) {
       setIsErrorPopupOpen(true); // open forgot pass modal
     };
     const closeErrorPopup = () => setIsErrorPopupOpen(false);
+
+    // close modal if clicking outside the modal (on the overlay)
+    useEffect(() => {
+      const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            closePassModal(); // close modal on Escape key press
+        }
+        };
+        const handleClickOutside = (event) => {
+        if (overlayRef.current && !modalRef.current.contains(event.target)) {
+            closePassModal(); // close modal if the click is outside the modal content but inside the overlay
+        }
+      };
+      // click listener to the document
+      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('mousedown', handleClickOutside);
+      // cleanup on unmount
+      return () => {
+          document.removeEventListener('keydown', handleEscKey);
+          document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
+
 
     //handling forgot password form submission
     const forgotPassHandler = (e) => {
@@ -160,7 +222,8 @@ function ForgotPassModal({ closeForgotPassModal }) {
       <>
         {/* password reset modal*/}
         {isPassModalOpen && (
-          <div id="pass-modal" className="popup" style={{ zIndex: 1, display: 'block' }}>
+          <div className='popup-overlay' ref={overlayRef}>
+          <div id="pass-modal" className="popup" style={{ zIndex: 1, display: 'block' }} ref={modalRef}>
             <br />
             <h3 style={{ textAlign: 'center' }}>Password Reset</h3>
             <span className="close" id="close-pass-button" onClick={closePassModal}>&times;</span>
@@ -184,6 +247,7 @@ function ForgotPassModal({ closeForgotPassModal }) {
                 Send
               </button>
             </form>
+          </div>
           </div>
         )}
         {isErrorPopupOpen && (

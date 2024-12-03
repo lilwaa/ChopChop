@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // css styling
 import '../../styles/animate.css';
 import '../../styles/icomoon.css';
@@ -6,14 +6,10 @@ import '../../styles/bootstrap.css';
 import '../../styles/flexslider.css';
 import '../../styles/style.css';
 
-import {app, auth, db} from "../../firebase/firebaseConfig.js";
-//import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"
-import { getDoc, doc, collection, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
-//import { getFirestore, doc, getDoc, setDoc, collection } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"
-
-import {getAuth, sendEmailVerification, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth"; 
-
 function ErrorPopup({ error, closeErrorPopup }) {
+    // references to modal and overlay
+    const modalRef = useRef(null);
+    const overlayRef = useRef(null);
     const [isOpen, setIsOpen] = useState(true); // Popup visibility
     const [errorMessage, setErrorMessage] = useState(''); // Error message
   
@@ -59,15 +55,38 @@ function ErrorPopup({ error, closeErrorPopup }) {
       setIsOpen(false);
       closeErrorPopup(); // Close the error popup from the parent
     };
+
+     // close modal if clicking outside the modal (on the overlay)
+     useEffect(() => {
+      const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            closePopup(); // close modal on Escape key press
+        }
+        };
+        const handleClickOutside = (event) => {
+          if (overlayRef.current && !modalRef.current.contains(event.target)) {
+              closePopup(); // close modal if the click is outside the modal content but inside the overlay
+          }
+      };
+      // click listener to the document
+      document.addEventListener('keydown', handleEscKey);
+      document.addEventListener('mousedown', handleClickOutside);
+      // cleanup on unmount
+      return () => {
+          document.removeEventListener('keydown', handleEscKey);
+          document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
   
     return (
       <>
         {isOpen && (
-          <div className="popup-overlay" id="popupOverlay">
-            <div className="popup" style={{ display: 'block', zIndex: 999 }} id="popup">
+          <div className="popup-overlay" id="popupOverlay" ref={overlayRef}>
+            <div className="popup" style={{ display: 'block', zIndex: 999 }} id="popup" ref={modalRef}>
               <span className="close" id="closePopup" onClick={closePopup}>
                 &times;
               </span>
+              <br />
               <div className="popup-content" id="signupErrorContent">
                 <p>{`${errorMessage}`}</p> {/* Display the error message */}
               </div>
