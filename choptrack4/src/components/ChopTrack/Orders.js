@@ -252,7 +252,8 @@ function Orders() {
                 setStoreName(storeName);
     
                 // If Publix receipt: 
-                if (storeName.toLowerCase().includes("publix")) {
+                //if (storeName.toLowerCase().includes("publix")) {
+                if (true) {
                     const grandTotal = parsedData.receiptInfo.total?.grand_total;
                     if (grandTotal) {
                         setTotalCost(grandTotal); // Auto-populate the total cost input

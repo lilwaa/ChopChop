@@ -103,29 +103,34 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
       }
 
       //3: Grocery items extraction: search for entity type =  consumer good
-      const foodArr = [];
+      const items = {};
       nlpResult.entities.forEach(entity => {
         if (entity.type === 'CONSUMER_GOOD') {
-          foodArr.push({
+          const itemName = entity.name.toLowerCase();
+          items[itemName] = {
             id: uuidv4(),  // generate unique ID for each item
-            name: entity.name, 
-          }); 
+            cost: null,     // Default to null
+            other: null,    // Default to null
+            quantity: null, // Default to null
+            savings: null,  // Default to null
+            unit: null,     // Default to null
+            unitPrice: null // Default to null
+          }; 
         }
       });
 
       // Structure of receipt parsed from Kroger / other stores
       receiptInfo = {
         store: {
-          name: storeName, 
+          name: storeName,
           location: storeLoc
         }, 
-        items: {
-          foodArr
-        }, 
-        transaction:{
-          datetime: shopDate
+        items: items, // Update with the extracted items
+        transaction: {
+          datetime: shopDate,
+          extracted: nlpResult
         }
-      }
+      };
     }
 
     // Firestore path to save parsed receipts:
