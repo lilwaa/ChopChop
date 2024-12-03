@@ -119,6 +119,8 @@ function Orders() {
         try {
             const validItems = items.filter(item => item.name && item.name.trim() !== "");
     
+            console.log(validItems)
+
             if (validItems.length === 0) {
                 console.error("No valid items to save.");
                 return;
@@ -171,6 +173,7 @@ function Orders() {
     
                 // Update items if they were modified
                 validItems.forEach(item => {
+                    console.log("here: " + item)
                     if (item.name in receiptData.receiptInfo.items) {
                         // Update existing item details
                         receiptData.receiptInfo.items[item.name] = {
@@ -179,7 +182,7 @@ function Orders() {
                         };
                     } else {
                         // Add new item
-                        receiptData.receiptInfo.items[item.name] = {
+                          receiptData.receiptInfo.items[item.name] = {
                             cost: item.cost || "",
                             quantity: item.quantity || 1,
                             unit: item.unit || "",
@@ -197,7 +200,19 @@ function Orders() {
                     }
                 }
             } else {
-                console.warn("Original receipt not found. Proceeding with form data only.");
+              console.log("No existing receipt found. Proceeding with form data only.");
+              // Initialize receipt data with valid items
+              receiptData.receiptInfo.items = validItems.reduce((acc, item) => {
+                  acc[item.name] = {
+                      cost: item.cost || "",
+                      quantity: item.quantity || 1,
+                      unit: item.unit || "",
+                      unitPrice: item.unitPrice || "",
+                      savings: item.savings || 0,
+                      other: item.other || ""
+                  };
+                  return acc;
+              }, {});
             }
     
             // Save updated data into 'clean-receipts'
@@ -530,6 +545,7 @@ const handleViewReceipt = async (receiptId) => {
         setSelectedReceipt(receiptData.receiptInfo); // Set the receipt info from receiptData
         setOpenReceiptModal(true); // Open the modal
       } else {
+        alert("No receipt image found!");
         console.error("Image URL not found in the receipt document.");
       }
     } else {
@@ -537,6 +553,7 @@ const handleViewReceipt = async (receiptId) => {
     }
   } catch (error) {
     console.error("Error fetching receipt data or image URL: ", error);
+    
   }
 };
 

@@ -28,53 +28,83 @@ function Budget() {
         console.error('User data not found.');
         return;
       }
-
+  
       console.log('User data:', userData);
-
+  
       const userDocRef = doc(db, 'users', userData.uid);
       const crCollectionRef = collection(userDocRef, 'clean-receipts');
       const snapshot = await getDocs(crCollectionRef);
-
-      // Log the path to check the collection reference
+  
       console.log('Fetching receipts from path:', crCollectionRef.path);
-
-      // Initialize arrays to hold the grand totals and dates
-      let totalsArray = [];
-      let datesArray = [];
-
-      // Fetch receipt info for each receipt
+  
+      // Initialize an object to hold totals by date
+      const totalsByDate = {};
+  
+      // Process each document in the snapshot
       snapshot.docs.forEach((docSnapshot) => {
         const receiptData = docSnapshot.data();
-        // Log the receipt data for debugging
         console.log('Receipt Data:', receiptData);
-
-        // Access the grand_total in the receipt info object inside transaction
-        const grandTotal = receiptData?.receiptInfo?.total?.grand_total;
+  
+        // Access the grand_total and datetime
+        let grandTotal = receiptData?.receiptInfo?.total?.grand_total;
         const datetime = receiptData?.receiptInfo?.transaction?.datetime?.seconds;
-        
-        // Convert the datetime (timestamp) to a human-readable date
-        if (grandTotal && datetime) {
-          const date = new Date(datetime * 1000).toLocaleDateString(); // Convert seconds to milliseconds for Date
-          totalsArray.push({ date, grandTotal });
+  
+        // Ensure grandTotal is a number
+        if (typeof grandTotal === 'string') {
+          grandTotal = parseFloat(grandTotal);  // Convert string to number if needed
+        }
+  
+        // Proceed only if grandTotal and datetime are valid
+        if (!isNaN(grandTotal) && datetime) {
+          const date = new Date(datetime * 1000).toLocaleDateString(); // Convert seconds to human-readable date
+  
+          // Log before updating the totalsByDate object
+          console.log(`Before update: ${date} - ${totalsByDate[date] || 0}`);
+  
+          // If the date doesn't exist, initialize it
+          if (!totalsByDate[date]) {
+            totalsByDate[date] = 0;
+          }
+  
+          // Add grand total to the existing value for this date
+          totalsByDate[date] += grandTotal;
+  
+          // Log the updated totals for the date
+          console.log(`After update: ${date} - ${totalsByDate[date]}`);
+        } else {
+          console.warn(`Invalid grandTotal or datetime for receipt: ${receiptData}`);
         }
       });
-
+  
+      // Log the final state of totalsByDate before converting to an array
+      console.log('Final totalsByDate:', totalsByDate);
+  
+      // Convert the object into an array of dates and grand totals
+      const totalsArray = [];
+      for (const date in totalsByDate) {
+        totalsArray.push({
+          date,
+          grandTotal: totalsByDate[date],
+        });
+      }
+  
       // Sort the totalsArray by date
       totalsArray.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      // After sorting, separate the dates and grand totals into their own arrays
+  
+      // Separate the dates and grand totals into their own arrays
       const sortedDates = totalsArray.map(item => item.date);
       const sortedTotals = totalsArray.map(item => item.grandTotal);
-
+  
       setDates(sortedDates);
       setGrandTotals(sortedTotals);
-
-      console.log("Sorted Grand Totals:", sortedTotals);  // Log the array of sorted grand totals
-      console.log("Sorted Dates:", sortedDates);  // Log the array of sorted dates
+  
+      //console.log("Sorted Grand Totals:", sortedTotals);  // Log the sorted grand totals
+      //console.log("Sorted Dates:", sortedDates);  // Log the sorted dates
     } catch (error) {
-      console.error('Error fetching receipts:', error);
+      //console.error('Error fetching receipts:', error);
     }
   };
+  
 
   // Fetch receipts on component mount
   useEffect(() => {
@@ -104,23 +134,10 @@ function Budget() {
       title: {
         display: true,
         text: 'Grand Total Over Time',
-        font: {
-          family: 'AovelSansRounded, sans-serif',  
-          size: 20, 
-          weight: 'bold',  
-        },
       },
       tooltip: {
         mode: 'index',
         intersect: false,
-        bodyFont: {
-          family: 'AovelSansRounded, sans-serif',  
-          size: 14,  
-        },
-        titleFont: {
-          family: 'AovelSansRounded, sans-serif', 
-          size: 16,  
-        },
       },
     },
     scales: {
@@ -128,34 +145,16 @@ function Budget() {
         title: {
           display: true,
           text: 'Date',
-          font: {
-            family: 'AovelSansRounded, sans-serif',  
-            size: 20,  
-            weight: 'bold',
-          },
         },
         ticks: {
           maxRotation: 45, // Rotate x-axis labels for better readability
           minRotation: 30,
-          font: {
-            family: 'AovelSansRounded, sans-serif',  // Font for y-axis labels
-            size: 12,  // Font size for y-axis labels
-          },
         },
       },
       y: {
         title: {
           display: true,
           text: 'Cost ($)',
-          font: {
-            family: 'AovelSansRounded, sans-serif',  // Font for x-axis title
-            size: 20,  // Font size for x-axis title
-            weight: 'bold',
-          },
-        },
-        font: {
-          family: 'AovelSansRounded, sans-serif',  // Font for y-axis labels
-          size: 12,  // Font size for y-axis labels
         },
         beginAtZero: true,
       },
@@ -183,3 +182,6 @@ function Budget() {
 }
 
 export default Budget;
+
+
+

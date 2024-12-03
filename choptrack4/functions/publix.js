@@ -24,13 +24,13 @@ function extractTotals(text) {
     const orderTotalRegex = /Order Total\s*([\d\.]+)/;
     const foodTaxRegex = /Food Tax\s*([\d\.]+)/;
     const grandTotalRegex = /Grand Total\s*([\d\.]+)/;
-    const creditPaymentRegex = /Credit Payment\s*([\d\.]+)/;
+    //const creditPaymentRegex = /Credit Payment\s*([\d\.]+)/;
     const changeRegex = /Change\s*([\d\.]+)/;
   
     totals.order_total = text.match(orderTotalRegex) ? parseFloat(text.match(orderTotalRegex)[1]) : 0;
     totals.food_tax = text.match(foodTaxRegex) ? parseFloat(text.match(foodTaxRegex)[1]) : 0;
     totals.grand_total = text.match(grandTotalRegex) ? parseFloat(text.match(grandTotalRegex)[1]) : 0;
-    totals.credit_payment = text.match(creditPaymentRegex) ? parseFloat(text.match(creditPaymentRegex)[1]) : 0;
+    //totals.credit_payment = text.match(creditPaymentRegex) ? parseFloat(text.match(creditPaymentRegex)[1]) : 0;
     totals.change = text.match(changeRegex) ? parseFloat(text.match(changeRegex)[1]) : 0;
   
     return totals;
