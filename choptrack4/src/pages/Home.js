@@ -56,7 +56,7 @@ function Home() {
                     <div className="row text-center">
                         <h2 className="about-heading">About ChopChop</h2>
                         <p className="about-description">
-                            ChopChop is your one-stop solution for meal planning, helping college students save time, money, and eat healthier. Our platform focuses on three key features that empower you to maintain a balanced lifestyle.
+                            ChopChop is your one-stop solution for meal planning, helping college students save time, money, and eat healthier. Our platform focuses on two key features that empower you to maintain a balanced lifestyle.
                         </p>
                     </div>
                     <div className="row features-row">
