@@ -16,7 +16,7 @@ function ErrorPopup({ error, closeErrorPopup }) {
     // changing error message depended on what error we put in
     useEffect(() => {
         let errMess = '';
-        console.log(error);
+        console.error(error);
         if (error === 'auth/email-already-in-use') {
             errMess = "Error: This user already exists!"; 
         } else if (error === 'auth/invalid-email') {

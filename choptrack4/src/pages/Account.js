@@ -45,7 +45,7 @@ const closeErrorPopup = () => setIsErrorPopupOpen(false);
             if (docSnap.exists()) {
               setUserProfile(docSnap.data());
             } else {
-              console.log("No such document!");
+              console.error("No such document!");
             }
           } catch (error) {
             console.error("Error fetching document:", error);
@@ -87,7 +87,6 @@ const closeErrorPopup = () => setIsErrorPopupOpen(false);
 
         const userDocRef = doc(db, 'userProfile', user.uid);
         updateDoc(userDocRef, updates).then(() => {
-          console.log("Profile updated");
           document.getElementById("acc-editsubmit").textContent = "Edit";
           nameField.setAttribute("readonly", "readonly");
           phoneField.setAttribute("readonly", "readonly");
@@ -95,10 +94,9 @@ const closeErrorPopup = () => setIsErrorPopupOpen(false);
 
           if (email) {
             verifyBeforeUpdateEmail(auth.currentUser, email).then(() => {
-              console.log("Email updated successfully");
               window.location.reload();
             }).catch((error) => {
-              console.log(error);
+              console.error(error);
             });
           }
           else{
@@ -121,7 +119,6 @@ const closeErrorPopup = () => setIsErrorPopupOpen(false);
     e.preventDefault();
     const email = user.email;
     sendPasswordResetEmail(auth, email).then(() => {
-      console.log("Password reset email sent");
       setErrorMess("Password reset email sent!");
       openErrorPopup();
     }).catch((error) => {

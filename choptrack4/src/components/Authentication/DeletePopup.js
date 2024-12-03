@@ -29,7 +29,6 @@ function DeletePopup({ closeDeletePopup }) {
       if (overlayRef.current && !modalRef.current.contains(event.target)) {
         closeDeletePopup(); // close modal if the click is outside the modal content but inside the overlay
       }
-      console.log("byebye")
     };
     const handleEscKey = (event) => {
         if (event.key === 'Escape' && !isErrorPopupOpen) {
@@ -72,7 +71,6 @@ function DeletePopup({ closeDeletePopup }) {
     const deleteHandler = (e) => {
         e.preventDefault();
         openReauthenticatePopup();
-        console.log(isReauthenticatePopupOpen);
     };
   
 

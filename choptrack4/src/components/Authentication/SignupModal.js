@@ -69,7 +69,6 @@ function SignupModal() {
         if (password===confirmedPass){
           createUserWithEmailAndPassword(auth, email, password).then(
             cred => {
-                console.log("user creation");
                 
                 const user = cred.user;
                 const usersCollection = collection(db, 'userProfile'); 
@@ -86,11 +85,10 @@ function SignupModal() {
                     updateProfile(auth.currentUser, {
                       displayName: namee
                     }).catch((error) => {
-                      console.log(error)
+                      console.error(error)
                     });
                     sendEmailVerification(auth.currentUser)
                     .then(() => {            
-                        console.log("verification sent");
                         setErrorMess("Check email " + email + " for verification!");
                         openErrorPopup();
                         // const element = document.getElementById("signupErrorContent");
@@ -115,7 +113,6 @@ function SignupModal() {
         });
         } 
         else{
-          console.log("passwords are not the same");
           setErrorMess("The passwords you entered are not the same.");
           openErrorPopup();
         }

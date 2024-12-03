@@ -14,7 +14,6 @@ async function deleteSubcollection(collectionRef) {
   const snapshot = await getDocs(collectionRef);
 
   if (snapshot.empty) {
-    console.log(`No documents to delete in subcollection: ${collectionRef.path}`);
     return;
   }
   // delete all documents in this subcollection
@@ -24,7 +23,6 @@ async function deleteSubcollection(collectionRef) {
   });
   // commit the batch delete operation
   await batch.commit();
-  console.log(`Deleted ${snapshot.size} documents in subcollection: ${collectionRef.path}`);
 }
 
 // main function to delete a document and its subcollections
@@ -40,7 +38,6 @@ async function deleteDocumentWithSubcollections(docPath) {
     }
     // delete the parent document after all subcollections are deleted
     await deleteDoc(docRef);
-    console.log(`Deleted document: ${docRef.path}`);
   } catch (error) {
     console.error('Error during deletion:', error);
   }
@@ -61,9 +58,7 @@ async function deleteAllReceiptsForUser(uid) {
     // iterate through each file in the receipts folder and delete it
     for (const item of listResult.items) {
       await deleteObject(item);  // Delete each receipt
-      console.log(`Deleted receipt: ${item.fullPath}`);
     }
-    console.log(`All receipts for user ${uid} deleted successfully.`);
   } catch (error) {
     console.error('Error deleting receipts from Firebase Storage:', error);
   }
@@ -79,11 +74,9 @@ async function deleteProf(uid) {
     const path = `users/${uid}`;
     // delete document and subcollections in firestore
     deleteDocumentWithSubcollections(path)
-    .then(() => console.log('Deletion complete'))
     .catch((error) => console.error('Error deleting document:', error));
     //delete receipts from firebase storage
     deleteAllReceiptsForUser(uid)
-    .then(() => console.log('Receipt deletion complete'))
     .catch((error) => console.error('Error deleting receipts:', error));
     
   }
@@ -95,7 +88,7 @@ async function deleteProf(uid) {
 
     const [isOpen, setIsOpen] = useState(true);
     const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(auth.currentUser.email);
     const [password, setPassword] = useState('');
     const [errorMess, setErrorMess] = useState('');
   
@@ -160,8 +153,6 @@ async function deleteProf(uid) {
   
         // delete user from fb
         await deleteUser(user);
-  
-        console.log("User deletion successful");
         setErrorMess("Account deleted successfully.");
         openErrorPopup();
         closeReauthModal(); // close modal after successful deletion
@@ -185,9 +176,9 @@ async function deleteProf(uid) {
                 <input
                   type="email"
                   id="login-email"
-                  placeholder="Email"
+                  defaultValue={auth.currentUser.email}
                   onChange={(e) => setEmail(e.target.value)} // email input
-                  required
+                  readOnly='read-only'
                 />
               </div>
               <div className="input-field">
