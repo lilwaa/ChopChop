@@ -22,31 +22,31 @@ function ErrorPopup({ error, closeErrorPopup }) {
         let errMess = '';
         console.log(error);
         if (error === 'auth/email-already-in-use') {
-            errMess = "This user already exists!"; 
+            errMess = "Error: This user already exists!"; 
         } else if (error === 'auth/invalid-email') {
-            errMess = "Invalid email!"; 
+            errMess = "Error: Invalid email!"; 
         } else if (error === 'auth/weak-password') {
-            errMess = "Invalid password! Must be longer than 6 characters."; 
+            errMess = "Error: Invalid password! Must be longer than 6 characters."; 
         } else if (error === 'auth/invalid-password') {
-            errMess = "Invalid password!"; 
+            errMess = "Error: Invalid password!"; 
         } else if (error === 'auth/invalid-email') {
-            errMess = "Invalid Email."; 
+            errMess = "Error: Invalid Email."; 
         } else if (error === 'auth/user-not-found') {
-            errMess = "User not found."; 
+            errMess = "Error: User not found."; 
         } else if (error === 'auth/invalid-credential') {
-            errMess = "Invalid Credentials. Maybe an incorrect email or password?"; 
+            errMess = "Error: Invalid Credentials. Maybe an incorrect email or password?"; 
         } else if(error === 'auth/too-many-requests'){
-            errMess = "Too many failed login attempts. Reset password or try again later."; 
+            errMess = "Error: Too many failed login attempts. Reset password or try again later."; 
         } else if(error === 'auth/wrong-password'){
-            errMess = "Wrong password."; 
+            errMess = "Error: Wrong password."; 
         } else if (error === 'auth/network-request-fail'){
-            errMess = "Network error. Please check your connection.";
+            errMess = "Error: Network error. Please check your connection.";
         } else if (error === "auth/requires-recent-login"){
-            errMess = "Please log in again.";
+            errMess = "Error: Please log in again.";
         } else if (error === "auth/user-token-expired"){
-            errMess = "Token has expired. Logout and log in again.";
+            errMess = "Error: Token has expired. Logout and log in again.";
         } else if (error === "auth/unknown"){
-            errMess = "Unknown error.";
+            errMess = "Error: Unknown error.";
         }
         else {
             errMess = error; 
@@ -69,7 +69,7 @@ function ErrorPopup({ error, closeErrorPopup }) {
                 &times;
               </span>
               <div className="popup-content" id="signupErrorContent">
-                <p>{`Error: ${errorMessage}`}</p> {/* Display the error message */}
+                <p>{`${errorMessage}`}</p> {/* Display the error message */}
               </div>
             </div>
           </div>

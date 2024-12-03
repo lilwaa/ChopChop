@@ -22,6 +22,7 @@ function SignupModal() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmedPass, setConfirmedPass] = useState('');
     const [phoneNumberr, setPhoneNumber] = useState('');
     const [namee, setName] = useState('');
 
@@ -37,7 +38,8 @@ function SignupModal() {
 
     const signupHandler = (e) => {
         e.preventDefault();
-        createUserWithEmailAndPassword(auth, email, password).then(
+        if (password==confirmedPass){
+          createUserWithEmailAndPassword(auth, email, password).then(
             cred => {
                 console.log("user creation");
                 
@@ -72,7 +74,9 @@ function SignupModal() {
                     setPassword('');
                     setPhoneNumber('');
                     setName('');
-                    signInWithEmailAndPassword(auth, email, password);
+                    // if(!isErrorPopupOpen){
+                    //   signInWithEmailAndPassword(auth, email, password);
+                    // }
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
@@ -81,6 +85,12 @@ function SignupModal() {
           setErrorMess(error.code);
           openErrorPopup();
         });
+        } 
+        else{
+          console.log("passwords are not the same");
+          setErrorMess("The passwords you entered are not the same.");
+          openErrorPopup();
+        }
     };
 
   
@@ -126,6 +136,15 @@ function SignupModal() {
                 id="signup-password"
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)} 
+                required
+              />
+            </div>
+            <div className="input-field">
+              <input
+                type="password"
+                id="signup-confirm-password"
+                placeholder="Retype Password"
+                onChange={(e) => setConfirmedPass(e.target.value)} 
                 required
               />
             </div>

@@ -130,7 +130,7 @@ const AccountPage = () => {
   if (!user) {
     return (
       <div>
-        <p style= {{textAlign: 'center', fontSize: '30px'}}>Please log in to view your account information.</p>
+        <p style= {{textAlign: 'center', fontSize: '30px', padding: '3rem'}}>Please log in to view your account information.</p>
       </div>
     );
   }
