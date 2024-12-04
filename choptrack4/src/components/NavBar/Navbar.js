@@ -1,95 +1,80 @@
-import React,  { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-// css styling
 import '../../styles/Navbar.css';
 
-import {app, auth, db} from "../../firebase/firebaseConfig.js";
-
-//import logo
+// Import logo
 import logo from "../../assets/placeholder.png";
 
+// Firebase auth
+import { auth } from "../../firebase/firebaseConfig.js";
+
 function Navbar() {
-  const [openLinks, setOpenLinks] = useState(false);
-  const [user, setUser] = useState(null); // authstate tracking
-  const toggleNavbar = () => {
-    setOpenLinks(!openLinks);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null); // Auth state tracking
+
+  // Toggle the dropdown menu
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   useEffect(() => {
     const currentUser = auth.currentUser;
-    setUser(currentUser); // set the current user in the state
+    setUser(currentUser); // Set the current user in the state
 
     const intervalId = setInterval(() => {
       const user = auth.currentUser;
       setUser(user);
-    }, 1000); // every 1 second (just an example)
+    }, 1000); // Check auth state every second
 
-    // clear the interval if the component unmounts
     return () => clearInterval(intervalId);
-    }, []); // empty dependency array to only run on mount
+  }, []);
 
-     // logout handler
-    const logoutHandler = () => {
-      auth
-        .signOut()
-        .then(() => {
-          console.log("User logged out successfully");
-        })
-        .catch((error) => {
-          console.error("Error logging out: ", error);
-        });
-    };
+  // Logout handler
+  const logoutHandler = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log("User logged out successfully");
+        setMenuOpen(false); // Close menu after logout
+      })
+      .catch((error) => {
+        console.error("Error logging out: ", error);
+      });
+  };
 
   return (
-    <div className="navbar">
-      <img src={logo} width="75" alt="ChopChop Logo" />
-      <div className="leftSide">
-        <div className="hiddenLinks">
-          <Link to="/">Home</Link>
-          <Link to="/search">ChopGuide</Link>
-          {user && (<Link to="/track">ChopTrack</Link>)}
-          {user && (<Link to="/account">Account</Link>)}
-          <div className="logout-wrapper">
-          {user && (
-            <p
-              className="logoutButton"
-              onClick={logoutHandler}
-              style={{
-                cursor: 'pointer',
-              }}
-            >
-              Logout
-          </p>)}
-         </div>
-        </div>
+    <nav className="navbar">
+      {/* Logo */}
+      <div className="navbar-logo">
+        <img src={logo} alt="ChopChop Logo" width="75" />
       </div>
-      (<div className="rightSide">
-        <Link to="/">Home</Link>
-        <Link to="/search">ChopGuide</Link>
-        {user && (<Link to="/track">ChopTrack</Link>)}
-        {user && (<Link to="/account">Account</Link>)}
-        {/* logout button display*/}
-         {/* conditionally render Logout as text if user is logged in */}
-         <div className="logout-wrapper">
+
+      {/* Hamburger menu button */}
+      <button className="menu-toggle" onClick={toggleMenu}>
+        {menuOpen ? "✖" : "☰"}
+      </button>
+
+      {/* Dropdown menu */}
+      {menuOpen && (
+        <div className="dropdown-menu">
+          <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+          <Link to="/search" onClick={() => setMenuOpen(false)}>ChopGuide</Link>
+          {user && <Link to="/track" onClick={() => setMenuOpen(false)}>ChopTrack</Link>}
+          {user && <Link to="/account" onClick={() => setMenuOpen(false)}>Account</Link>}
           {user && (
             <p
               className="logoutButton"
               onClick={logoutHandler}
               style={{
-                cursor: 'pointer',
+                cursor: "pointer",
               }}
             >
               Logout
-          </p>)}
-         </div>
-        </div>)
-        {/*navbar toggle -- i feel like it is not helpful
-        <p id="navbarToggle" onClick={toggleNavbar}>
-          ≡
-        </p>
-        */}
-        
-    </div>
+            </p>
+          )}
+        </div>
+      )}
+    </nav>
   );
 }
 
