@@ -24,6 +24,22 @@ function Home() {
 
         return () => clearInterval(intervalId);
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+          if (user) {
+            setUser(user);
+          } else {
+            setUser(null);
+          }
+        });
+    
+        // Cleanup the listener when the component unmounts
+        return () => unsubscribe();
+      }, []); // Empty dependency array means this effect runs once on component mount
+    
+
+
     useEffect(() => {
         // change the title dynamically
         document.title = 'Home';
@@ -32,6 +48,10 @@ function Home() {
 
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+
+    const openLoginModal = () => setIsLoginModalOpen(true);
+    const openSignupModal = () => setIsSignupModalOpen(true);
 
     const closeLoginModal = () => setIsLoginModalOpen(false);
     const closeSignupModal = () => setIsSignupModalOpen(false);
@@ -44,8 +64,10 @@ function Home() {
                     <h1>ChopChop</h1>
                     <p>Simplify your meal prep journey</p>
                     <div style={{ textAlign: "center" }}>
-                        {!user && <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />}
-                        {!user && <SignupModal isOpen={isSignupModalOpen} onClose={closeSignupModal} />}
+                    {!user && (<button className="logged-out btn green darken-2 z-depth-0" onClick={openLoginModal}>Login</button>)}
+                    {!user && (<button className="logged-out btn green darken-2 z-depth-0" onClick={openSignupModal}>Sign Up</button>)}
+                        {<LoginModal isOpen={isLoginModalOpen} closeModal={closeLoginModal} />}
+                        {<SignupModal isOpen={isSignupModalOpen} closeModal={closeSignupModal} />}
                     </div>
                 </div>
             </div>

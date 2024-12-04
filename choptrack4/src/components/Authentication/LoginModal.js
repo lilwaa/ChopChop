@@ -14,20 +14,16 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail} from "firebase/auth
 import ErrorPopup from './ErrorPopup.js';
 
 
-function LoginModal() {
+function LoginModal({isOpen, closeModal}) {
     // references to modal and overlay
     const modalRef = useRef(null);
     const overlayRef = useRef(null);
 
-    const [isOpen, setIsOpen] = useState(false);
     const [isForgotPassModalOpen, setIsForgotPassModalOpen] = useState(false);
     const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMess, setErrorMess] = useState('');
-
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
   
     //open/close forgot password modal
     const openForgotPassModal = () => {
@@ -158,10 +154,10 @@ function LoginModal() {
         <ErrorPopup error={errorMess} closeErrorPopup={closeErrorPopup} />
       )}
 
-      {/* login button */}
-      <button className="logged-out btn green darken-2 z-depth-0" onClick={openModal}>
-        Login
-      </button>
+      {/* login button
+      {!auth.currentUser && 
+      ()
+      } */}
     </>
   );
 }

@@ -9,14 +9,10 @@ import { updateProfile, sendEmailVerification, createUserWithEmailAndPassword, }
 import ErrorPopup from './ErrorPopup.js';
 import PrivacyPopup from './PrivacyPopup.js';
 
-function SignupModal() {
+function SignupModal({isOpen, closeModal}) {
     // references to modal and overlay
     const modalRef = useRef(null);
     const overlayRef = useRef(null);
-
-    const [isOpen, setIsOpen] = useState(false);
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
     
 
     const [email, setEmail] = useState('');
@@ -215,7 +211,6 @@ function SignupModal() {
        {isPrivPopupOpen && (
         <PrivacyPopup closePrivPopup={closePrivPopup} />
       )}
-      <button className="logged-out btn green darken-2 z-depth-0" onClick={openModal}>Sign Up</button>
     </>
   );
 }

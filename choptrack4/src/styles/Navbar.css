@@ -46,6 +46,10 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  transform: color ease 0.5s;
+}
+.menu-toggle:hover{
+  color: #8b8989
 }
 
 
@@ -61,6 +65,15 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 0;
+  opacity: 0; 
+  visibility: hidden; 
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s; 
+}
+
+.dropdown-menu.open {
+  opacity: 1; 
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s linear 0s;
 }
 
 .dropdown-menu a,
@@ -71,7 +84,7 @@
   width: 100%;
   text-align: center;
   padding: 0.5rem 0;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .dropdown-menu a:hover,
