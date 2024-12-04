@@ -3,12 +3,12 @@ ChopChop is a web-based application designed to help college students efficientl
 1. ChopTrack: Tracks the expiration dates of ingredients and generates weekly grocery lists.
 2. ChopGuide: Suggests recipes based on available ingredients and dietary preferences.
 
-# Background
+## Background
 The transition to college life brings unique challenges, particularly in maintaining a balanced diet amidst limited time, budgets, and resources. Many students struggle with meal planning, unhealthy eating habits, and food waste, which can lead to poor health and increased expenses.
 
 ChopChop addresses these challenges by providing an intuitive, web-based solution that helps students manage their meals, track ingredients, generate recipes based on available supplies, and monitor nutrition. By simplifying meal prep and grocery shopping, ChopChop empowers college students to adopt healthier, more cost-effective lifestyles while reducing food waste and promoting a sense of community through shared resources.
 
-# Getting Started
+## Getting Started
 
 ### Install Dependencies
 cd choptrack4
@@ -44,11 +44,11 @@ To produce the same results as our demos, a folder of receipts used will be give
 3. Firebase is upgraded to pay-as-you-go plan, Google Vision API and Language API limited to 1000 calls/month, please refrain from excessive storage and amounts of calls. 
 4. All services (APIs, firebase) will be discontinued after the semester
 
-### Help
+## Help
 
 Please reach out to the project maintainers via GitHub profiles
 
-# Authors
+## Authors
 @ybae45
 @jiyaushah
 @lilwaa
