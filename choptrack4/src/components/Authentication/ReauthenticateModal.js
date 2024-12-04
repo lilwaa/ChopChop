@@ -126,6 +126,13 @@ async function deleteProf(uid) {
         };
       };
     }, [isOpen, isErrorPopupOpen]);
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = "hidden"; // Disable scrolling when popup is open
+      } else {
+        document.body.style.overflow = "auto"; // Re-enable scrolling after popup closes
+      }
+    }, [isOpen]);
   
     // open/close error popup
     const openErrorPopup = () => setIsErrorPopupOpen(true);

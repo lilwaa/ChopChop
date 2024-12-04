@@ -7,6 +7,7 @@ import { auth, db} from "../../firebase/firebaseConfig.js";
 import { doc, collection, setDoc } from 'firebase/firestore';
 import { updateProfile, sendEmailVerification, createUserWithEmailAndPassword, } from "firebase/auth"; 
 import ErrorPopup from './ErrorPopup.js';
+import PrivacyPopup from './PrivacyPopup.js';
 
 function SignupModal() {
     // references to modal and overlay
@@ -16,6 +17,7 @@ function SignupModal() {
     const [isOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
+    
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,11 +29,34 @@ function SignupModal() {
     const [errorMess, setErrorMess] = useState('');
     const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
 
-    //open/close forgot error popup
+    //privacy popup 
+    const [isPrivPopupOpen, setIsPrivPopupOpen] = useState(false);
+     // Open the popup (trigger the fade-in effect)
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = "hidden"; // Disable scrolling when popup is open
+      } else {
+        document.body.style.overflow = "auto"; // Re-enable scrolling after popup closes
+      }
+    }, [isOpen]);
+
+
+
+    //open/close error popup
     const openErrorPopup = () => {
       setIsErrorPopupOpen(true); // open forgot pass modal
     };
     const closeErrorPopup = () => setIsErrorPopupOpen(false);
+    //open/close error popup
+    const openPrivPopup = () => {
+      setIsPrivPopupOpen(true); // open forgot pass modal
+    };
+    const closePrivPopup = () => setIsPrivPopupOpen(false);
+    const privHandler = (event) =>{
+      openPrivPopup();
+    };
+
+
 
     // close modal if clicking outside the modal (on the overlay)
     const handleClickOutside = (event) => {
@@ -46,7 +71,7 @@ function SignupModal() {
     };
 
     useEffect(() => {
-      if(isErrorPopupOpen){
+      if(isErrorPopupOpen || isPrivPopupOpen){
           document.removeEventListener('mousedown', handleClickOutside);
           document.removeEventListener('keydown', handleEscKey);
           return;
@@ -62,7 +87,7 @@ function SignupModal() {
            return () => {
         };
       };
-    }, [isOpen, isErrorPopupOpen]);
+    }, [isOpen, isErrorPopupOpen, isPrivPopupOpen]);
 
     const signupHandler = (e) => {
         e.preventDefault();
@@ -91,18 +116,12 @@ function SignupModal() {
                     .then(() => {            
                         setErrorMess("Check email " + email + " for verification!");
                         openErrorPopup();
-                        // const element = document.getElementById("signupErrorContent");
-                        // element.textContent = "Please check email for verification link!"; 
-                        // openPopup();
                     });
                     closeModal();
                     setEmail('');
                     setPassword('');
                     setPhoneNumber('');
                     setName('');
-                    // if(!isErrorPopupOpen){
-                    //   signInWithEmailAndPassword(auth, email, password);
-                    // }
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
@@ -122,7 +141,7 @@ function SignupModal() {
   return (
     <>
       {isOpen && (
-        <div className="popup-overlay" id="popupOverlay" ref={overlayRef}>
+        <div className="popup-overlay" ref={overlayRef}>
         <div id="signup-modal" className="popup" style={{ zIndex: 1, display: 'block' }} ref={modalRef}>
           <br />
           <h3 style={{ textAlign: 'center' }}>Sign up</h3>
@@ -181,7 +200,7 @@ function SignupModal() {
             >
               Sign up
             </button>
-            <span>
+            <span onClick={(e) => privHandler(e)} >
               What do we do with your information?*
             </span>
           </form>
@@ -191,6 +210,10 @@ function SignupModal() {
       {/* error popup */}
       {isErrorPopupOpen && (
         <ErrorPopup error={errorMess} closeErrorPopup={closeErrorPopup} />
+      )}
+       {/* priv popup */}
+       {isPrivPopupOpen && (
+        <PrivacyPopup closePrivPopup={closePrivPopup} />
       )}
       <button className="logged-out btn green darken-2 z-depth-0" onClick={openModal}>Sign Up</button>
     </>

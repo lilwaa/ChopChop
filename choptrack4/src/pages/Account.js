@@ -5,7 +5,7 @@ import '../styles/style.css';
 
 // firebase imports
 import { doc, getDoc, updateDoc, collection } from 'firebase/firestore';
-import { sendPasswordResetEmail, verifyBeforeUpdateEmail} from "firebase/auth"; 
+import { sendPasswordResetEmail, verifyBeforeUpdateEmail, updateProfile} from "firebase/auth"; 
 import {auth, db} from "../firebase/firebaseConfig.js";
 import DeletePopup from '../components/Authentication/DeletePopup.js';
 import ErrorPopup from '../components/Authentication/ErrorPopup.js';
@@ -82,7 +82,13 @@ const closeErrorPopup = () => setIsErrorPopupOpen(false);
 
       if (name || phoneNumber || email) {
         const updates = {};
-        if (name) updates.name = name;
+        if (name){
+          updates.name = name;
+          updateProfile(user, {
+            displayName: name
+          });
+
+        } 
         if (phoneNumber) updates.phoneNumber = phoneNumber;
 
         const userDocRef = doc(db, 'userProfile', user.uid);

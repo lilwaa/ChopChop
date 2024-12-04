@@ -77,6 +77,14 @@ function ErrorPopup({ error, closeErrorPopup }) {
           document.removeEventListener('mousedown', handleClickOutside);
       };
     }, []);
+     // Open the popup (trigger the fade-in effect)
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling when popup is open
+    } else {
+      document.body.style.overflow = "auto"; // Re-enable scrolling after popup closes
+    }
+  }, [isOpen]);
   
     return (
       <>

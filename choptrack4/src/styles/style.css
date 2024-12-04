@@ -1150,10 +1150,15 @@ input[type="date"]:focus {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 999;
+  display: 'block';
 }
 
 .popup-content {
   text-align: center;
+  font-size: 2rem;
 }
 .popup .close {
   position: absolute;
@@ -1162,6 +1167,7 @@ input[type="date"]:focus {
   font-size: 20px;
   cursor: pointer;
   color: #333;
+  transition: color 0.3s;
 
 }
 .popup button {
@@ -1173,7 +1179,10 @@ input[type="date"]:focus {
   cursor: pointer;
   font-size: 16px;
 }
-/*# sourceMappingURL=style.css.map */
+.popup h3, .popup h4 {
+  margin-top: 0; /* Remove margin on top of headings */
+  font-weight: bold;
+}
 
 
 .logo-topleft{
@@ -1248,10 +1257,25 @@ input[type="date"]:focus {
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 2rem;
   margin-top: 20px;
   width: 75%;                 /* Button takes full width */
 }
 
+#privPopup{
+  overflow-y: auto;
+  width: 50vw;
+  height: 60vh;
 
+}
 
+#privPopup p {
+  font-size: 1.5rem;
+  line-height: 1.6;  /* Improve readability */
+  text-align: left;
+}
+
+#privPopup h4 {
+  font-size: 2rem;
+  line-height: 1.6;  /* Improve readability */
+}

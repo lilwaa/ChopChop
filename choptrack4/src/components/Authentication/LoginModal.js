@@ -42,6 +42,14 @@ function LoginModal() {
       setIsErrorPopupOpen(true); // open forgot pass modal
     };
     const closeErrorPopup = () => setIsErrorPopupOpen(false);
+     // Open the popup (trigger the fade-in effect)
+      useEffect(() => {
+        if (isOpen) {
+          document.body.style.overflow = "hidden"; // Disable scrolling when popup is open
+        } else {
+          document.body.style.overflow = "auto"; // Re-enable scrolling after popup closes
+        }
+      }, [isOpen]);
 
     // close modal if clicking outside the modal (on the overlay)
     const handleClickOutside = (event) => {
