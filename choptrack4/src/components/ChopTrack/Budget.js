@@ -134,10 +134,23 @@ function Budget() {
       title: {
         display: true,
         text: 'Grand Total Over Time',
+        font: {
+          family: 'AovelSansRounded, sans-serif',  
+          size: 20, 
+          weight: 'bold',  
+        },
       },
       tooltip: {
         mode: 'index',
         intersect: false,
+        bodyFont: {
+          family: 'AovelSansRounded, sans-serif',  
+          size: 14,  
+        },
+        titleFont: {
+          family: 'AovelSansRounded, sans-serif', 
+          size: 16,  
+        },
       },
     },
     scales: {
@@ -145,16 +158,30 @@ function Budget() {
         title: {
           display: true,
           text: 'Date',
+          font: {
+            family: 'AovelSansRounded, sans-serif',  
+            size: 20,  
+            weight: 'bold',
+          },
         },
         ticks: {
           maxRotation: 45, // Rotate x-axis labels for better readability
           minRotation: 30,
+          font: {
+            family: 'AovelSansRounded, sans-serif',  
+            weight: 'bold',
+          },
         },
       },
       y: {
         title: {
           display: true,
           text: 'Cost ($)',
+          font: {
+            family: 'AovelSansRounded, sans-serif',  
+            size: 20,  
+            weight: 'bold',
+          },
         },
         beginAtZero: true,
       },

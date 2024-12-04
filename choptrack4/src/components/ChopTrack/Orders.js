@@ -871,11 +871,11 @@ const handleViewReceipt = async (receiptId) => {
                                                           top: '-2.5rem' }}>
                                                 {item.reminderDate ? (
                                                     <NotificationsActiveIcon
-                                                        style={{ cursor: 'pointer', color: 'green' }}
+                                                        style={{ cursor: 'pointer', color: 'green', fontSize: '2rem' }}
                                                     />
                                                 ) : (
                                                     <NotificationsOffIcon
-                                                        style={{ cursor: 'pointer', color: 'gray' }}
+                                                        style={{ cursor: 'pointer', color: 'gray', fontSize: '2rem' }}
                                                     />
                                             )}
                                             </span>
@@ -883,7 +883,7 @@ const handleViewReceipt = async (receiptId) => {
                                             <span onClick={() => handleDeleteRow(index)} style={{verticalAlign: 'middle', 
                                                           position: 'relative',
                                                           top: '-2.5rem' }}>
-                                                <DeleteIcon style={{ cursor: 'pointer', color: 'rgba(211, 47, 47, 0.7)' }} />
+                                                <DeleteIcon style={{ cursor: 'pointer', color: 'rgba(211, 47, 47, 0.7)' , fontSize: '2rem'}} />
                                             </span>
                                             
                                         </Stack>
