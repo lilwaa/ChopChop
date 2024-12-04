@@ -5,9 +5,8 @@
 
 * {
   font-family: myFirstFont;
-  
 }
-/* src/styles/Navbar.css */
+
 .navbar {
   position: fixed;
   top: 0;
@@ -17,84 +16,87 @@
   background-color: #333;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Center all items vertically */
+  align-items: center;
   padding: 0 2rem;
-  z-index: 1000;  /* Make sure navbar is always on top */
+  z-index: 1000;
   padding-top: 5px;
 }
 
-.navbar a {
+.navbar a,
+.navbar p,
+.navbar button {
   color: white;
   text-decoration: none;
   margin: 0 1rem;
   font-size: 1.5rem;
-  align-items: center;
-}
-.navbar p{
-  color: white;
-  text-decoration: none;
-  margin: 0 1rem;
-  font-size: 1.5rem;display: flex; /* Ensures vertical alignment */
-  align-items: center; /* Vertically align the items within each link/button */
-}
-
-.navbar button{
-  color: white;
-  text-decoration: none;
-  margin: 0 1rem;
-  font-size: 1.5rem;
+  display: flex;
   align-items: center;
 }
 
-.navbar a:hover {
-  color: #ddd;
-}
-
-.navbar p:hover {
-  color: #ddd;
-}
+.navbar a:hover,
+.navbar p:hover,
 .navbar button:hover {
   color: #ddd;
 }
 
 .rightSide {
+  margin-left: auto; /* Pushes the rightSide items to the far right */
   display: flex;
   align-items: center;
-  
 }
-.logout-wrapper{
+
+.logout-wrapper {
   align-items: center;
   padding-top: 11px;
 }
 
-.navbarToggle{
+.navbarToggle {
   display: none;
-  background-color: none;
+  background-color: transparent;
   border: none;
-  color:  white;
-  font-size: 1.5rem;
+  color: white;
+  font-size: 1.8rem;
   cursor: pointer;
   padding: 0.5rem;
 }
 
 .hiddenLinks {
   display: none;
+  flex-direction: column;
+  background-color: #333;
+  position: absolute;
+  top: 60px;
+  width: 100%;
+  padding: 1rem 0;
 }
 
-@media screen and (max-width: 600px) {
-  .rightSide a {
+.hiddenLinks a {
+  padding: 0.5rem 2rem;
+}
+
+.hiddenLinks.active {
+  display: flex;
+}
+
+/* Media Queries for Smaller Screens */
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+    padding: 0 1rem;
+  }
+
+  .rightSide {
     display: none;
   }
-  
-  .rightSide button {
+
+  .navbarToggle {
     display: block;
   }
-  
-  .hiddenLinks {
-    display: flex;
-    flex-direction: column;
-  }
-  
+}
+
+/* Expanded view for toggle button */
+@media screen and (max-width: 768px) {
+  .navbar.active .rightSide,
   .hiddenLinks.active {
     display: flex;
   }
