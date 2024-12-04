@@ -5,99 +5,93 @@
 
 * {
   font-family: myFirstFont;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  background-color: #333;
+  height: 60px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
-  background-color: #333;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
   z-index: 1000;
-  padding-top: 5px;
 }
 
-.navbar a,
-.navbar p,
-.navbar button {
-  color: white;
-  text-decoration: none;
-  margin: 0 1rem;
-  font-size: 1.5rem;
+.navbar-logo {
+  position: absolute; /* Make it independent of flexbox layout */
+  left: 1rem; /* Align logo to the far left edge */
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
 }
 
-.navbar a:hover,
-.navbar p:hover,
-.navbar button:hover {
-  color: #ddd;
-}
-
-.rightSide {
-  margin-left: auto; /* Pushes the rightSide items to the far right */
-  display: flex;
-  align-items: center;
-}
-
-.logout-wrapper {
-  align-items: center;
-  padding-top: 11px;
-}
-
-.navbarToggle {
-  display: none;
-  background-color: transparent;
+.menu-toggle {
+  position: absolute; /* Make it independent of the flex layout */
+  right: 1.5rem; /* Push it to the right edge with padding */
+  top: 50%;
+  transform: translateY(-50%); /* Center vertically in the navbar */
+  background: none;
   border: none;
   color: white;
-  font-size: 1.8rem;
+  font-size: 2rem;
   cursor: pointer;
-  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.hiddenLinks {
-  display: none;
-  flex-direction: column;
-  background-color: #333;
+
+/* Dropdown menu styling */
+.dropdown-menu {
   position: absolute;
   top: 60px;
+  right: 0;
   width: 100%;
+  background-color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   padding: 1rem 0;
 }
 
-.hiddenLinks a {
-  padding: 0.5rem 2rem;
+.dropdown-menu a,
+.dropdown-menu p {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem 0;
+  transition: background 0.3s ease;
 }
 
-.hiddenLinks.active {
-  display: flex;
+.dropdown-menu a:hover,
+.dropdown-menu p:hover {
+  background: #444;
+  color: #ddd;
 }
 
-/* Media Queries for Smaller Screens */
-@media screen and (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    padding: 0 1rem;
+/* Media Queries */
+@media (max-width: 768px) {
+  .navbar-logo img {
+    height: 50px;
   }
 
-  .rightSide {
-    display: none;
+  .menu-toggle {
+    font-size: 1.8rem;
   }
 
-  .navbarToggle {
-    display: block;
-  }
-}
-
-/* Expanded view for toggle button */
-@media screen and (max-width: 768px) {
-  .navbar.active .rightSide,
-  .hiddenLinks.active {
-    display: flex;
+  .dropdown-menu a,
+  .dropdown-menu p {
+    font-size: 1rem;
   }
 }
