@@ -18,3 +18,7 @@ material ui v3: icons-material 6.1.9, material 6.1.8, x-date-pickers 7.22.3
 react-calendar 5.1.0, react-icons 5.3.0, emotion/react 11.13.5
 charts.js 4.4.6, react-chartsjs-2 5.2.0
 Edamam API
+
+### Setup
+cd choptrack4 
+npm install
