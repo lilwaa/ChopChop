@@ -54,7 +54,7 @@ function Orders() {
         if (!userData) { // Fetch only if not already fetched
           try {
             userData = await getUserData();
-            //console.log(`Fetched User Data:`, userData);
+
           } catch (error) {
             console.error('Failed to fetch user data:', error);
             throw error;
@@ -83,7 +83,6 @@ function Orders() {
         if (!file | !userData) return;
 
         const imageRef = ref(storage, `users/${userData.uid}/receipts/${v4()}_${file.name}`); // prevent duplicate file names
-        console.log(imageRef);
 
         //const imageRef = ref(storage, `receipt-files/${v4()}_${file.name}`); // prevents duplicate file names
         uploadBytes(imageRef, file).then((snapshot) => {
@@ -118,8 +117,6 @@ function Orders() {
     
         try {
             const validItems = items.filter(item => item.name && item.name.trim() !== "");
-    
-            console.log(validItems)
 
             if (validItems.length === 0) {
                 console.error("No valid items to save.");
@@ -173,7 +170,7 @@ function Orders() {
     
                 // Update items if they were modified
                 validItems.forEach(item => {
-                    console.log("here: " + item)
+                
                     if (item.name in receiptData.receiptInfo.items) {
                         // Update existing item details
                         receiptData.receiptInfo.items[item.name] = {
@@ -232,20 +229,14 @@ function Orders() {
         await fetchUserData();
         if (!documentId | !userData) return;
         setShowForm(true);
-
-        console.log(userData.uid);
-        console.log(documentId);
-      
     
         const userDocRef = doc(db, 'users', userData.uid);
         const parsedDataRef = doc(userDocRef, 'receipts', documentId);
         //const parsedDataRef = doc(db, "receipts", documentId);
         const parsedDataSnapshot = await getDoc(parsedDataRef);
-        //console.log(parsedDataRef);
  
         if (parsedDataSnapshot.exists()) {
             const parsedData = parsedDataSnapshot.data();
-            console.log(parsedData);
     
             if (parsedData && parsedData.receiptInfo?.store?.name) {
                 const storeName = parsedData.receiptInfo.store.name;
@@ -265,7 +256,7 @@ function Orders() {
                         const parsedDate = new Date(datetime); // Convert to Date object
                         if (!isNaN(parsedDate)) {
                             setDate(parsedDate); // Set the date state
-                            console.log("Parsed Date:", parsedDate);
+                         
                         } else {
                             console.log("Invalid datetime format:", datetime);
                         }
@@ -353,7 +344,7 @@ function Orders() {
                 const itemRef = doc(userDocRef, 'fridge', item.id);
 
                 await deleteDoc(itemRef); // Delete the document from Firestore
-                console.log('Item successfully deleted from Firestore');
+               
             } catch (error) {
                 console.error('Error deleting item from Firestore: ', error);
             }
@@ -370,8 +361,7 @@ function Orders() {
         if (!userData) return;
         if (selectedRow !== null && items[selectedRow]) {
             const item = items[selectedRow];
-            console.log(item);
-    
+     
             // Ensure no fields are undefined or null
             const itemName = item.name || null;
             const cost = item.cost || null;
@@ -404,7 +394,7 @@ function Orders() {
                         unitPrice,
                         reminderDate,
                     });
-                    console.log('Item successfully saved/updated in fridge');
+        
     
                 }
     
@@ -433,7 +423,6 @@ function Orders() {
 
     // Function to handle row deletion
     const handleDeleteRow = async (index) => {
-        console.log("Delete from form");
         setItems((prevItems) => prevItems.filter((_, i) => i !== index));
     };
 
@@ -501,7 +490,6 @@ function Orders() {
       const receiptDocRef = doc(userDocRef, 'clean-receipts', receiptId);
 
       await deleteDoc(receiptDocRef);
-      console.log('Receipt deleted successfully.');
       setReceipts((prev) => prev.filter((receipt) => receipt.id !== receiptId));
     } catch (error) {
       console.error('Error deleting receipt:', error);
@@ -519,8 +507,6 @@ function Orders() {
 const handleViewReceipt = async (receiptId) => {
   await fetchUserData();
   if (!userData) return;
-
-  console.log("receipt: " + receiptId);
 
   try {
     // Fetch the receipt data (receiptInfo) from Firestore
@@ -771,7 +757,6 @@ const handleViewReceipt = async (receiptId) => {
                                 style={{ display: 'none' }} // Hide the input completely
                                 onChange={(e) => {
                                   const files = e.target.files;
-                                  console.log(files[0]);
                                   if (files && files.length > 0) {
                                     setFileData(files[0]); // Only call setFileData if files are selected
                                   } else {

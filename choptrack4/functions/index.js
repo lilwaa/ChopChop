@@ -29,8 +29,7 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
   try {
     // Extract userId from storage path (users/{uid}/receipts/{fileName})
     const pathParts = object.name.split('/');
-    console.log(pathParts);
-    logger.log(pathParts);
+    //logger.log(pathParts);
     const userId = pathParts[1]; // userData.uid
     const fileName = pathParts[3]; // File name with UUID and original file name
 
@@ -109,12 +108,12 @@ export const readReceiptDetails = functions.storage.object().onFinalize(async (o
           const itemName = entity.name.toLowerCase();
           items[itemName] = {
             id: uuidv4(),  // generate unique ID for each item
-            cost: null,     // Default to null
-            other: null,    // Default to null
-            quantity: null, // Default to null
-            savings: null,  // Default to null
-            unit: null,     // Default to null
-            unitPrice: null // Default to null
+            cost: null,    
+            other: null,    
+            quantity: null, 
+            savings: null,  
+            unit: null,     
+            unitPrice: null 
           }; 
         }
       });
@@ -281,7 +280,7 @@ export const sendRemindersOnChange = functions.firestore
 
       // Fetch phone number from 'userProfile/{userId}' collection
       logger.log(`Fetching user profile phone number for userId: ${userId}`);
-      const userProfileDocRef = admin.firestore().collection('userProfile').doc(userId);  // This is the user document in 'userProfile'
+      const userProfileDocRef = admin.firestore().collection('userProfile').doc(userId);  
       const userProfileDoc = await userProfileDocRef.get();
 
       if (!userProfileDoc.exists) {
@@ -289,7 +288,7 @@ export const sendRemindersOnChange = functions.firestore
         return;
       }
 
-      const { phoneNumber } = userProfileDoc.data();  // Assuming phoneNumber is a field in the document
+      const { phoneNumber } = userProfileDoc.data();  
       if (!phoneNumber) {
         logger.warn(`User ${userId} does not have a phone number.`);
         return;

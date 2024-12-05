@@ -39,7 +39,6 @@ function Fridge() {
         if (!userData) { // Fetch only if not already fetched
           try {
             userData = await getUserData();
-            console.log(`Fetched User Data:`, userData);
           } catch (error) {
             console.error('Failed to fetch user data:', error);
             throw error;

@@ -116,8 +116,8 @@ const ShoppingList = () => {
       updatedItems[index].store = storeInput.trim();
       setItems(updatedItems);
     }
-    setActiveStoreEditIndex(null); // Close the input field after saving
-    setStoreInput(''); // Clear the store input field
+    setActiveStoreEditIndex(null); 
+    setStoreInput(''); 
   };
 
   const handleStoreInputKeyPress = (e, index) => {
@@ -125,8 +125,8 @@ const ShoppingList = () => {
       const updatedItems = [...items];
       updatedItems[index].store = storeInput.trim();
       setItems(updatedItems);
-      setActiveStoreEditIndex(null); // Close the input after saving
-      setStoreInput(''); // Clear the input field
+      setActiveStoreEditIndex(null); 
+      setStoreInput(''); 
     }
   };
 

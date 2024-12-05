@@ -29,21 +29,16 @@ function Budget() {
         return;
       }
   
-      console.log('User data:', userData);
   
       const userDocRef = doc(db, 'users', userData.uid);
       const crCollectionRef = collection(userDocRef, 'clean-receipts');
       const snapshot = await getDocs(crCollectionRef);
   
-      console.log('Fetching receipts from path:', crCollectionRef.path);
-  
       // Initialize an object to hold totals by date
       const totalsByDate = {};
   
-      // Process each document in the snapshot
       snapshot.docs.forEach((docSnapshot) => {
         const receiptData = docSnapshot.data();
-        console.log('Receipt Data:', receiptData);
   
         // Access the grand_total and datetime
         let grandTotal = receiptData?.receiptInfo?.total?.grand_total;
@@ -51,33 +46,26 @@ function Budget() {
   
         // Ensure grandTotal is a number
         if (typeof grandTotal === 'string') {
-          grandTotal = parseFloat(grandTotal);  // Convert string to number if needed
+          grandTotal = parseFloat(grandTotal); 
         }
   
         // Proceed only if grandTotal and datetime are valid
         if (!isNaN(grandTotal) && datetime) {
-          const date = new Date(datetime * 1000).toLocaleDateString(); // Convert seconds to human-readable date
+          const date = new Date(datetime * 1000).toLocaleDateString();
   
-          // Log before updating the totalsByDate object
-          console.log(`Before update: ${date} - ${totalsByDate[date] || 0}`);
-  
-          // If the date doesn't exist, initialize it
           if (!totalsByDate[date]) {
             totalsByDate[date] = 0;
           }
   
-          // Add grand total to the existing value for this date
+      
           totalsByDate[date] += grandTotal;
   
-          // Log the updated totals for the date
-          console.log(`After update: ${date} - ${totalsByDate[date]}`);
+    
         } else {
-          console.warn(`Invalid grandTotal or datetime for receipt: ${receiptData}`);
+          console.warn(`Invalid grandTotal or datetime for receipt`);
         }
       });
   
-      // Log the final state of totalsByDate before converting to an array
-      console.log('Final totalsByDate:', totalsByDate);
   
       // Convert the object into an array of dates and grand totals
       const totalsArray = [];
@@ -98,10 +86,8 @@ function Budget() {
       setDates(sortedDates);
       setGrandTotals(sortedTotals);
   
-      //console.log("Sorted Grand Totals:", sortedTotals);  // Log the sorted grand totals
-      //console.log("Sorted Dates:", sortedDates);  // Log the sorted dates
     } catch (error) {
-      //console.error('Error fetching receipts:', error);
+      console.error('Error fetching receipts:', error);
     }
   };
   
@@ -117,19 +103,17 @@ function Budget() {
     datasets: [
       {
         label: 'Grand Total',
-        data: grandTotals, // Grand totals for y-axis
-        borderColor: 'rgba(255, 165, 0, 1)',  // Orange color for the line
-        backgroundColor: 'rgba(255, 165, 0, 0.2)',  // Light orange for the area under the line
-        borderWidth: 2,
-        tension: 0.4, // Smooth line curve
+        data: grandTotals, 
+        borderColor: 'rgba(255, 165, 0, 1)',  
+        backgroundColor: 'rgba(255, 165, 0, 0.2)', 
+        tension: 0.4, 
       },
     ],
   };
 
-  // Chart options for customization
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false,  // Allows for custom height
+    maintainAspectRatio: false, 
     plugins: {
       title: {
         display: true,
@@ -165,7 +149,7 @@ function Budget() {
           },
         },
         ticks: {
-          maxRotation: 45, // Rotate x-axis labels for better readability
+          maxRotation: 45, // Rotate x-axis labels
           minRotation: 30,
           font: {
             family: 'AovelSansRounded, sans-serif',  
