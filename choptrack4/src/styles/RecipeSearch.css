@@ -428,3 +428,94 @@
   gap: 8px;
   margin-bottom: 20px;
 }
+
+/* Recipe Card Container */
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Content area that holds everything except the button */
+.recipe-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Image container and image */
+.recipe-image-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 60%; /* Maintains aspect ratio */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.recipe-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Recipe title */
+.recipe-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Tags container and individual tags */
+.recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recipe-tag {
+  padding: 6px 12px;
+  background-color: #dcfce7;
+  color: #166534;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+/* Recipe details */
+.recipe-details {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* View Recipe button - always at bottom */
+.view-recipe-button {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #bc8f8f;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: auto; /* Pushes button to bottom */
+}
+
+.view-recipe-button:hover {
+  background-color: #a87979;
+}
+
+/* If you're displaying cards in a grid, add this container */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}

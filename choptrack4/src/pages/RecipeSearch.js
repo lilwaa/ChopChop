@@ -77,6 +77,47 @@ const formatLabel = (label) => {
     .join(' ');
 };
 
+const RecipeCard = ({ recipe }) => {
+  return (
+    <div className="recipe-card">
+      <div className="recipe-content">
+        {/* Recipe Image */}
+        <div className="recipe-image-container">
+          <img 
+            src={recipe.image} 
+            alt={recipe.title} 
+            className="recipe-image"
+          />
+        </div>
+
+        {/* Recipe Title */}
+        <h3 className="recipe-title">{recipe.title}</h3>
+
+        {/* Recipe Tags */}
+        <div className="recipe-tags">
+          {recipe.tags?.map((tag, index) => (
+            <span 
+              key={index}
+              className="recipe-tag"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Recipe Details */}
+        <div className="recipe-details">
+          <p>Calories: {recipe.calories} kcal</p>
+          <p>Time: {recipe.cookTime} mins</p>
+        </div>
+      </div>
+
+      <button className="view-recipe-button">
+        View Recipe
+      </button>
+    </div>
+  );
+};
 function RecipeSearch() {
   const [expandedGroups, setExpandedGroups] = useState({});
   const [selectedFilters, setSelectedFilters] = useState({
