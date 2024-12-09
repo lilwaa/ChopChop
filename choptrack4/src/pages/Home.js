@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BannerImage from "../assets/cooking.jpg";
 import "../styles/Home.css";
+import { Link } from "react-router-dom";
 
 // import modals
 import LoginModal from "../components/Authentication/LoginModal.js";
@@ -82,13 +83,16 @@ function Home() {
                         </p>
                     </div>
                     <div className="row features-row">
-                        <div className="feature-box">
-                            <span className="feature-icon">📊</span>
-                            <h3 className="feature-title">ChopTrack</h3>
-                            <p className="feature-description">
-                                Monitor your nutrition and calories with personalized recipe recommendations tailored to your health goals.
-                            </p>
-                        </div>
+                        <Link to="/track" className="feature-link">
+                            <div className="feature-box">
+                               <span className="feature-icon">📊</span>
+                               <h3 className="feature-title">ChopTrack</h3>
+                                <p className="feature-description">
+                                    Monitor your nutrition and calories with personalized recipe recommendations tailored to your health goals.
+                                </p>
+                            </div>
+                        </Link>    
+                        <Link to="/search" className="feature-link">
                         <div className="feature-box">
                             <span className="feature-icon">🍳</span>
                             <h3 className="feature-title">ChopGuide</h3>
@@ -96,6 +100,7 @@ function Home() {
                                 Find recipes based on ingredients you already have, saving you time and money.
                             </p>
                         </div>
+                        </Link>
                     </div>
                 </div>
             </div>
