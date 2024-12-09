@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-//import { Link } from 'react-router-dom';
 import '../styles/RecipeSearch.css';
 
+// FilterGroup Component
 const FilterGroup = ({ title, options, expanded, onToggle, selectedOptions, onOptionChange }) => {
   useEffect(() => {
-    // change the title dynamically
     document.title = 'ChopGuide';
-  }, []); // runs only once after the component mounts
+  }, []);
 
   const [showAll, setShowAll] = useState(false);
-  const displayOptions = showAll ? options : options.slice(0, 6); // Show 6 options per row
+  const displayOptions = showAll ? options : options.slice(0, 6);
   const hasMore = options.length > 6;
   const remainingOptions = options.length - 6;
 
@@ -28,15 +27,15 @@ const FilterGroup = ({ title, options, expanded, onToggle, selectedOptions, onOp
 
   return (
     <div className="filter-group">
-      <button 
-        onClick={onToggle} 
+      <button
+        onClick={onToggle}
         className={getGroupClassName(title)}
         aria-expanded={expanded}
       >
         <span>{title}</span>
         {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </button>
-      
+
       {expanded && (
         <div className="filter-content">
           <div className="filter-grid">
@@ -52,7 +51,7 @@ const FilterGroup = ({ title, options, expanded, onToggle, selectedOptions, onOp
               </label>
             ))}
           </div>
-          
+
           {hasMore && (
             <div className="see-more-container">
               <button
@@ -76,16 +75,16 @@ const formatLabel = (label) => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
-
+// RecipeCard Component
 const RecipeCard = ({ recipe }) => {
   return (
     <div className="recipe-card">
       <div className="recipe-content">
         {/* Recipe Image */}
         <div className="recipe-image-container">
-          <img 
-            src={recipe.image} 
-            alt={recipe.title} 
+          <img
+            src={recipe.image}
+            alt={recipe.title}
             className="recipe-image"
           />
         </div>
@@ -96,7 +95,7 @@ const RecipeCard = ({ recipe }) => {
         {/* Recipe Tags */}
         <div className="recipe-tags">
           {recipe.tags?.map((tag, index) => (
-            <span 
+            <span
               key={index}
               className="recipe-tag"
             >
@@ -118,7 +117,13 @@ const RecipeCard = ({ recipe }) => {
     </div>
   );
 };
+
+// Main RecipeSearch Component
 function RecipeSearch() {
+  // State declarations
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [selectedFilters, setSelectedFilters] = useState({
     diet: [],
@@ -127,22 +132,20 @@ function RecipeSearch() {
     meal: [],
     dish: []
   });
-
   const [calorieRange, setCalorieRange] = useState({
     min: '',
     max: ''
   });
-
   const [searchQuery, setSearchQuery] = useState('');
   const [isValidRange, setIsValidRange] = useState(true);
-
+  // Calorie range handler
   const handleCalorieChange = (type, value) => {
     const newValue = value === '' ? '' : Math.max(0, Number(value));
     setCalorieRange(prev => ({
       ...prev,
       [type]: newValue
     }));
-    
+
     if (type === 'max' && calorieRange.min !== '' && newValue !== '') {
       setIsValidRange(Number(calorieRange.min) <= Number(newValue));
     }
@@ -151,115 +154,61 @@ function RecipeSearch() {
     }
   };
 
-
+  // Filter groups definition
   const filterGroups = {
     diet: {
       title: "Diet Type",
       options: [
-        "balanced",
-        "high-fiber",
-        "high-protein",
-        "low-carb",
-        "low-fat",
-        "low-sodium"
+        "balanced", "high-fiber", "high-protein",
+        "low-carb", "low-fat", "low-sodium"
       ]
     },
     health: {
       title: "Health Labels",
       options: [
-        "alcohol-cocktail",
-        "alcohol-free",
-        "celery-free",
-        "crustacean-free",
-        "dairy-free",
-        "DASH",
-        "egg-free",
-        "fish-free",
-        "fodmap-free",
-        "gluten-free",
-        "immuno-supportive",
-        "keto-friendly",
-        "kidney-friendly",
-        "kosher",
-        "low-fat-abs",
-        "low-potassium",
-        "low-sugar",
-        "lupine-free",
-        "Mediterranean",
-        "mollusk-free",
-        "mustard-free",
-        "no-oil-added",
-        "paleo",
-        "peanut-free",
-        "pescatarian",
-        "pork-free",
-        "red-meat-free",
-        "sesame-free",
-        "shellfish-free",
-        "soy-free",
-        "sugar-conscious",
-        "sulfite-free",
-        "tree-nut-free",
-        "vegan",
-        "vegetarian",
-        "wheat-free"
+        "alcohol-cocktail", "alcohol-free", "celery-free",
+        "crustacean-free", "dairy-free", "DASH",
+        "egg-free", "fish-free", "fodmap-free",
+        "gluten-free", "immuno-supportive", "keto-friendly",
+        "kidney-friendly", "kosher", "low-fat-abs",
+        "low-potassium", "low-sugar", "lupine-free",
+        "Mediterranean", "mollusk-free", "mustard-free",
+        "no-oil-added", "paleo", "peanut-free",
+        "pescatarian", "pork-free", "red-meat-free",
+        "sesame-free", "shellfish-free", "soy-free",
+        "sugar-conscious", "sulfite-free", "tree-nut-free",
+        "vegan", "vegetarian", "wheat-free"
       ]
     },
     cuisine: {
       title: "Cuisine Type",
       options: [
-        "American",
-        "Asian",
-        "British",
-        "Caribbean",
-        "Central Europe",
-        "Chinese",
-        "Eastern Europe",
-        "French",
-        "Indian",
-        "Italian",
-        "Japanese",
-        "Kosher",
-        "Mediterranean",
-        "Mexican",
-        "Middle Eastern",
-        "South American",
-        "South East Asian"
+        "American", "Asian", "British", "Caribbean",
+        "Central Europe", "Chinese", "Eastern Europe",
+        "French", "Indian", "Italian", "Japanese",
+        "Kosher", "Mediterranean", "Mexican",
+        "Middle Eastern", "South American", "South East Asian"
       ]
     },
     meal: {
       title: "Meal Type",
       options: [
-        "Breakfast",
-        "Dinner",
-        "Lunch",
-        "Snack",
-        "Teatime"
+        "Breakfast", "Dinner", "Lunch", "Snack", "Teatime"
       ]
     },
     dish: {
       title: "Dish Type",
       options: [
-        "Biscuits and cookies",
-        "Bread",
-        "Cereals",
-        "Condiments and sauces",
-        "Desserts",
-        "Drinks",
-        "Main course",
-        "Pancake",
-        "Preps",
-        "Preserve",
-        "Salad",
-        "Sandwiches",
-        "Side dish",
-        "Soup",
-        "Starter",
-        "Sweets"
+        "Biscuits and cookies", "Bread", "Cereals",
+        "Condiments and sauces", "Desserts", "Drinks",
+        "Main course", "Pancake", "Preps", "Preserve",
+        "Salad", "Sandwiches", "Side dish", "Soup",
+        "Starter", "Sweets"
       ]
     }
   };
 
+  // Group toggle handler
   const toggleGroup = (group) => {
     setExpandedGroups(prev => ({
       ...prev,
@@ -267,6 +216,7 @@ function RecipeSearch() {
     }));
   };
 
+  // Option change handler
   const handleOptionChange = (group, option) => {
     setSelectedFilters(prev => {
       const currentOptions = prev[group];
@@ -280,19 +230,70 @@ function RecipeSearch() {
     });
   };
 
-  const handleSearch = () => {
-    // Implement your search logic here
-    console.log({
-      searchQuery,
-      calorieRange,
-      selectedFilters
-    });
-  };
+  // Search handler with API integration
+  const handleSearch = async () => {
+    if (!isValidRange) return;
 
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Base params
+      const params = new URLSearchParams({
+        type: 'public',
+        app_id: 'YOUR_APP_ID',
+        app_key: 'YOUR_APP_KEY',
+        q: searchQuery || ''
+      });
+
+      // Add calorie range if specified
+      if (calorieRange.min || calorieRange.max) {
+        const calorieString = `${calorieRange.min || '0'}-${calorieRange.max || ''}`;
+        params.append('calories', calorieString);
+      }
+
+      // Add all filters
+      selectedFilters.diet.forEach(diet => params.append('diet', diet));
+      selectedFilters.health.forEach(health => params.append('health', health));
+      selectedFilters.cuisine.forEach(cuisine => params.append('cuisineType', cuisine));
+      selectedFilters.meal.forEach(meal => params.append('mealType', meal));
+      selectedFilters.dish.forEach(dish => params.append('dishType', dish));
+
+      const response = await fetch(`https://api.edamam.com/api/recipes/v2?${params}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch recipes');
+      }
+
+      const data = await response.json();
+
+      const transformedRecipes = data.hits.map(hit => ({
+        id: hit.recipe.uri.split('#')[1],
+        image: hit.recipe.image,
+        title: hit.recipe.label,
+        tags: [
+          ...hit.recipe.dietLabels,
+          ...hit.recipe.healthLabels.slice(0, 2),
+          ...(hit.recipe.cuisineType || []).slice(0, 1)
+        ].filter(Boolean),
+        calories: Math.round(hit.recipe.calories),
+        cookTime: hit.recipe.totalTime || 'N/A'
+      }));
+
+      setRecipes(transformedRecipes);
+
+    } catch (err) {
+      console.error('Search error:', err);
+      setError('Failed to fetch recipes. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="recipe-search-container">
       <h2 className="recipe-search-title">Recipe Search</h2>
-      
+
+      {/* Search Input */}
       <div className="search-container">
         <input
           type="text"
@@ -304,6 +305,7 @@ function RecipeSearch() {
         <Search className="search-icon" />
       </div>
 
+      {/* Calorie Filter */}
       <div className="calorie-filter">
         <h3 className="calorie-title">Calorie Range</h3>
         <div className="calorie-inputs">
@@ -338,6 +340,7 @@ function RecipeSearch() {
         )}
       </div>
 
+      {/* Filter Groups */}
       <div className="filters-container">
         {Object.entries(filterGroups).map(([key, group]) => (
           <FilterGroup
@@ -352,14 +355,38 @@ function RecipeSearch() {
         ))}
       </div>
 
+      {/* Search Button */}
       <div className="search-button-container">
-        <button 
+        <button
           onClick={handleSearch}
           className="search-button"
         >
           Search Recipes
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
+
+      {/* Loading and Results */}
+      {loading ? (
+        <div className="loading-message">
+          Loading recipes...
+        </div>
+      ) : (
+        <div className="recipe-grid">
+          {recipes.map(recipe => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
