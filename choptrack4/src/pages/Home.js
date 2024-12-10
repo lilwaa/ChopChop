@@ -88,7 +88,7 @@ function Home() {
                                <span className="feature-icon">📊</span>
                                <h3 className="feature-title">ChopTrack</h3>
                                 <p className="feature-description">
-                                    Monitor your nutrition and calories with personalized recipe recommendations tailored to your health goals.
+                                    ChopTrack is a feature that helps users stay organized by tracking grocery shopping through receipt uploads or manual input, monitoring expiration dates with an alert system, managing grocery lists for future shopping, and keeping track of costs to stay within budget.
                                 </p>
                             </div>
                         </Link>    
@@ -97,7 +97,7 @@ function Home() {
                             <span className="feature-icon">🍳</span>
                             <h3 className="feature-title">ChopGuide</h3>
                             <p className="feature-description">
-                                Find recipes based on ingredients you already have, saving you time and money.
+                                ChopGuide is a feature that helps users find recipes by ingredients or cuisine name, with additional options to filter results and set a calorie range. It’s designed to make meal planning more personalized and health-conscious.
                             </p>
                         </div>
                         </Link>
