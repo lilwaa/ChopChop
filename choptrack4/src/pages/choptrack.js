@@ -7,9 +7,11 @@ import Fridge from '../components/ChopTrack/Fridge.js';
 import ShoppingList from '../components/ChopTrack/ShoppingList.js';
 import Budget from '../components/ChopTrack/Budget.js';
 import Orders from '../components/ChopTrack/Orders.js';
+import {auth} from "../firebase/firebaseConfig.js";
 
 function App() {
   const [userName, setUserName] = useState('');  // State to store the user's name
+  const [user, setUser] = useState(null);
 
   // Fetch user data and update the state with the user's name
   const fetchUserData = async () => {
@@ -30,6 +32,27 @@ function App() {
     fetchUserData();
     document.title = 'ChopTrack';
   }, []);  // Empty dependency array ensures this runs once on mount
+
+
+  //to make it graceful when you logout on there:
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      setUser(authUser);
+      if (authUser) {
+      fetchUserData();
+      document.title = 'ChopTrack';
+      }
+    });
+    return () => unsubscribe(); // cleanup on component unmount
+  }, []);
+
+  if (!user) {
+    return (
+      <div>
+        <p style= {{textAlign: 'center', fontSize: '30px', padding: '3rem'}}>Please log in to view your ChopTrack.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="App">

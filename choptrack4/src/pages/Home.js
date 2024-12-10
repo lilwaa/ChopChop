@@ -83,15 +83,27 @@ function Home() {
                         </p>
                     </div>
                     <div className="row features-row">
-                        <Link to="/track" className="feature-link">
-                            <div className="feature-box">
-                               <span className="feature-icon">📊</span>
-                               <h3 className="feature-title">ChopTrack</h3>
+                        {(auth.currentUser) ? (
+                            <Link to="/track" className="feature-link">
+                                <div className="feature-box">
+                                <span className="feature-icon">📊</span>
+                                <h3 className="feature-title">ChopTrack</h3>
                                 <p className="feature-description">
                                     ChopTrack is a feature that helps users stay organized by tracking grocery shopping through receipt uploads or manual input, monitoring expiration dates with an alert system, managing grocery lists for future shopping, and keeping track of costs to stay within budget.
                                 </p>
-                            </div>
-                        </Link>    
+                                </div>
+                            </Link>
+                            ) : (
+                            <span className="feature-link disabled">
+                                <div className="feature-box">
+                                <span className="feature-icon">📊</span>
+                                <h3 className="feature-title">ChopTrack</h3>
+                                <p className="feature-description">
+                                    ChopTrack is a feature that helps users stay organized by tracking grocery shopping through receipt uploads or manual input, monitoring expiration dates with an alert system, managing grocery lists for future shopping, and keeping track of costs to stay within budget.
+                                </p>
+                                </div>
+                            </span>
+                            )}  
                         <Link to="/search" className="feature-link">
                         <div className="feature-box">
                             <span className="feature-icon">🍳</span>
